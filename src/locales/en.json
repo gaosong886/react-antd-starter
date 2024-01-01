@@ -1,0 +1,87 @@
+{
+    "common": {
+        "appName": "Admin Template",
+        "operationSuccess": "Operation successful"
+    },
+    "hint": {
+        "404": "Sorry, the page you visited does not exist.",
+        "pleaseSelect": "Please select",
+        "pleaseInput": "Please input",
+        "deleteWarning": "Are you sure to delete it?",
+        "deleteWarningDetail": "The data cannot be restored after deletion.",
+        "clearAllWarning": "Are you sure to clear it?",
+        "clearAllWarningDetail": "The data cannot be restored after clearing.",
+        "profilePhoto": "Please upload a JPEG/PNG format image, less than 300k",
+        "profilePhotoWrongType": "Only JPEG/PNG format images are allowed",
+        "profilePhotoWrongSize": "Image size must be less than 300k"
+    },
+    "status": {
+        "running": "Running",
+        "stoped": "Stoped",
+        "normal": "Normal",
+        "banned": "Banned"
+    },
+    "function": {
+        "logout": "Logout",
+        "returnToHome": "Return to Home",
+        "refresh": "Refresh",
+        "reset": "Reset",
+        "search": "Search",
+        "delete": "Delete",
+        "clearAll": "Clear All",
+        "confirm": "Confirm",
+        "cancel": "Cancel",
+        "edit": "Edit",
+        "new": "New",
+        "add": "Add",
+        "upload": "Upload",
+        "expand": "Expand"
+    },
+    "form": {
+        "common": {
+            "name": "Name",
+            "type": "Type",
+            "status": "Status",
+            "operation": "Operation",
+            "remark": "Remark",
+            "description": "Description",
+            "createAt": "Create Time",
+            "updateAt": "Update Time"
+        },
+        "schedule": {
+            "cronTime": "Cron Time",
+            "oneShot": "One Shot",
+            "lastExecution": "Last Execution"
+        },
+        "user": {
+            "userId": "User ID",
+            "nickname": "Nickname",
+            "photo": "Photo",
+            "username": "Username",
+            "password": "Password",
+            "roles": "Roles"
+        },
+        "log": {
+            "url": "URL",
+            "params": "Params",
+            "ip": "IP",
+            "requestAt": "Request Time"
+        },
+        "role": {
+            "allowedRoutes": "Allowed Routes"
+        },
+        "menu": {
+            "icon": "Icon",
+            "path": "Path",
+            "hidden": "Hidden",
+            "permissions": "Permissions",
+            "order": "Order",
+            "parentNode": "Parent Node",
+            "type": {
+                "directory": "Directory",
+                "page": "Page",
+                "operation": "Operation"
+            }
+        }
+    }
+}

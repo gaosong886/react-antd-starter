@@ -1,0 +1,87 @@
+{
+    "common": {
+        "appName": "后台脚手架",
+        "operationSuccess": "操作成功"
+    },
+    "hint": {
+        "404": "很抱歉, 您要访问的页面并不存在.",
+        "pleaseSelect": "请选择",
+        "pleaseInput": "请输入",
+        "deleteWarning": "确定要删除吗",
+        "deleteWarningDetail": "删除后数据不可恢复",
+        "clearAllWarning": "确定要清空吗",
+        "clearAllWarningDetail": "清空后数据不可恢复",
+        "profilePhoto": "请上传JPEG/PNG格式, 小于300k的图片",
+        "profilePhotoWrongType": "只能上传JPEG/PNG格式的图片",
+        "profilePhotoWrongSize": "图片大小必须小于300k"
+    },
+    "status": {
+        "running": "运行中",
+        "stoped": "已停止",
+        "normal": "正常",
+        "banned": "禁用"
+    },
+    "function": {
+        "logout": "退出登录",
+        "returnToHome": "返回首页",
+        "refresh": "刷新",
+        "reset": "重置",
+        "search": "查询",
+        "delete": "删除",
+        "clearAll": "清空",
+        "confirm": "确认",
+        "cancel": "取消",
+        "edit": "编辑",
+        "new": "新建",
+        "add": "添加",
+        "upload": "上传",
+        "expand" :"展开"
+    },
+    "form": {
+        "common": {
+            "name": "名称",
+            "type": "类型",
+            "status": "状态",
+            "operation": "操作",
+            "remark": "备注",
+            "description": "描述",
+            "createAt": "创建时间",
+            "updateAt": "更新时间"
+        },
+        "schedule": {
+            "cronTime": "定时规则",
+            "oneShot": "One Shot",
+            "lastExecution": "上次执行时间"
+        },
+        "user": {
+            "userId": "用户ID",
+            "nickname": "昵称",
+            "photo": "头像",
+            "username": "用户名",
+            "password": "密码",
+            "roles": "角色"
+        },
+        "log": {
+            "url": "URL",
+            "params": "参数",
+            "ip": "IP",
+            "requestAt": "时间"
+        },
+        "role": {
+            "allowedRoutes": "路由权限"
+        },
+        "menu": {
+            "icon": "图标",
+            "path": "路由",
+            "hidden": "是否隐藏",
+            "permissions": "权限",
+            "order": "排序",
+            "parentNode": "父节点",
+            "type": {
+                "directory": "目录",
+                "page": "页面",
+                "operation": "操作"
+            }
+        }
+    }
+}
