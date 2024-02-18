@@ -6,7 +6,7 @@ Frontend boilerplate of [nestjs-starter](https://github.com/gaosong886/nestjs-st
 
 ## Resources
 
-- [Live Demo](http://101.200.134.51)
+- [Live Demo](http://gaosong886.tech)
 
 ## Run
 
