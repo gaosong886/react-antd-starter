@@ -127,7 +127,7 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
                         width='md'
                         label={t('form.user.username')}
                         placeholder={t('hint.pleaseInput')}
-                        rules={[{ max: 32 }, { min: 5 }, { required: true }]}
+                        rules={[{ max: 15 }, { min: 5 }, { required: true }]}
                         required
                     />
                     <ProFormText.Password
@@ -135,7 +135,7 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
                         width='md'
                         label={t('form.user.password')}
                         placeholder={t('hint.pleaseInput')}
-                        rules={[{ max: 32 }, { min: 8 }]}
+                        rules={[{ max: 15 }, { min: 8 }]}
                     />
                 </ProForm.Group>
                 <ProForm.Group>
@@ -144,7 +144,7 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
                         width='md'
                         label={t('form.user.nickname')}
                         placeholder={t('hint.pleaseInput')}
-                        rules={[{ max: 32 }, { min: 2 }, { required: true }]}
+                        rules={[{ max: 15 }, { min: 2 }, { required: true }]}
                         required
                     />
                     <ProFormText
@@ -152,7 +152,7 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
                         width='md'
                         label={t('form.common.remark')}
                         placeholder={t('hint.pleaseInput')}
-                        rules={[{ max: 256 }, { min: 2 }]}
+                        rules={[{ max: 255 }, { min: 2 }]}
                     />
                 </ProForm.Group>
                 <ProForm.Group>

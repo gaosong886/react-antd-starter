@@ -78,7 +78,7 @@ export const RoleFormModal: React.FC<RoleFormModalProps> = (props: RoleFormModal
                         width='xl'
                         label={t('form.common.name')}
                         placeholder={t('hint.pleaseInput')}
-                        rules={[{ max: 32 }, { min: 2 }, { required: true }]}
+                        rules={[{ max: 31 }, { min: 2 }, { required: true }]}
                         required
                     />
                 </ProForm.Group>
@@ -88,7 +88,7 @@ export const RoleFormModal: React.FC<RoleFormModalProps> = (props: RoleFormModal
                         width='xl'
                         label={t('form.common.description')}
                         placeholder={t('hint.pleaseInput')}
-                        rules={[{ max: 256 }, { min: 2 }]}
+                        rules={[{ max: 255 }, { min: 2 }]}
                     />
                 </ProForm.Group>
                 <ProForm.Group>

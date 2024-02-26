@@ -115,7 +115,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
                         width='md'
                         label={t('form.common.name')}
                         placeholder={t('hint.pleaseInput')}
-                        rules={[{ max: 8 }, { min: 2 }, { required: true }]}
+                        rules={[{ max: 15 }, { min: 2 }, { required: true }]}
                         required
                     />
                     <ProFormTreeSelect

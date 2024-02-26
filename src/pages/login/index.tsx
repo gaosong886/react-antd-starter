@@ -53,7 +53,7 @@ const LoginPage: React.FC = () => {
                         placeholder={'admin'}
                         rules={[
                             { min: 5 },
-                            { max: 32 },
+                            { max: 15 },
                             {
                                 required: true,
                             },
@@ -68,7 +68,7 @@ const LoginPage: React.FC = () => {
                         placeholder={'12345678'}
                         rules={[
                             { min: 8 },
-                            { max: 32 },
+                            { max: 15 },
                             {
                                 required: true,
                             },
