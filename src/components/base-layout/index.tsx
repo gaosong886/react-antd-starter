@@ -16,6 +16,10 @@ import { buildMenuTree } from '../../utils/menu-tree';
 import { Res, ResCode, SysMenu, SysUser } from '../../api/types';
 import { API } from '../../api/constants';
 
+/**
+ * 通用页面父组件
+ * 
+ */
 const BaseLayout: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -29,29 +33,35 @@ const BaseLayout: React.FC = () => {
 
     const menuTree = useMemo(() => {
         if (menuState.resp?.data) {
+            // 把从服务端获取的菜单列表转换成树结构
             return buildMenuTree(menuState.resp?.data);
         }
     }, [menuState.resp?.data]);
 
+    // 未登录状态，跳转到登录页
     useEffect(() => {
         if (!AuthToken.get()) navigate('/login');
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
+        // 保存从服务器得到的用户信息
         if (userState.resp?.code == ResCode.SUCCESS) dispatch(setUserInfo(userState.resp.data));
     }, [dispatch, userState.resp]);
 
     useEffect(() => {
+        // 保存菜单树
         if (menuTree && menuTree.tree.length > 0) dispatch(setMenuInfo(menuTree.tree));
     }, [dispatch, menuTree]);
 
     useEffect(() => {
+        // store 中没有用户信息，尝试获取
         if (userInfo.id === 0) userState.fetch();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
+        // store 没有菜单数据，尝试获取菜单
         if (menuInfo.length === 0) menuState.fetch();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

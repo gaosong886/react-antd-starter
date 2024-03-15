@@ -8,6 +8,8 @@ import { ResCode, Res, ScheduledTask } from '../../api/types';
 import { API } from '../../api/constants';
 
 const SchedulePage: React.FC = () => {
+    const { t } = useTranslation();
+
     const tableState = useAxios<Res<ScheduledTask[]>>({
         url: API.SCHEDULE_LIST,
         method: 'get',
@@ -19,8 +21,6 @@ const SchedulePage: React.FC = () => {
         method: 'post',
         manual: true,
     });
-
-    const { t } = useTranslation();
 
     const columns: ColumnsType<ScheduledTask> = [
         {

@@ -8,6 +8,8 @@ import { Pagination, ResCode, Res, SysLog } from '../../../api/types';
 import { API } from '../../../api/constants';
 
 const UserManagementPage: React.FC = () => {
+    const { t } = useTranslation();
+
     const [pagination, setPagination] = useState({ page: 1, pageSize: 50 });
     const [query, setQuery] = useState('');
     const [inputStatus, setInputStatus] = useState<'' | 'warning' | 'error' | undefined>('');
@@ -18,8 +20,6 @@ const UserManagementPage: React.FC = () => {
         method: 'post',
         manual: true,
     });
-
-    const { t } = useTranslation();
 
     const truncateState = useAxios<Res<undefined>>({ url: API.LOG_TRUNCATE, method: 'post', manual: true });
 

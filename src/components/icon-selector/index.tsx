@@ -13,8 +13,14 @@ export interface IconSelectorProps {
     setValue?: (value: string) => void;
 }
 
+/**
+ * Antd 图标选择器组件
+ * 
+ */
 const IconSelector = (props: IconSelectorProps) => {
     const { iconType, defaultValue, dropdownStyle, placement, iconStyle, setValue } = props;
+
+    // 读取 Antd 的图标库
     const iconList = useMemo(
         () => Object.keys(icons).filter((item) => typeof (icons as any)[item] === 'object' && item !== 'default' && item.includes(iconType)),
         [iconType]

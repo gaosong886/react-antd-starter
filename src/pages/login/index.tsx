@@ -10,9 +10,10 @@ import { JwtToken, ResCode, Res, ValidError } from '../../api/types';
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
     const loginState = useAxios<Res<JwtToken | ValidError>>({ url: API.AUTH_LOGIN, method: 'post' });
     const validationMsgs = useMemo(() => (loginState.resp?.data as ValidError)?.errors || [], [loginState.resp?.data]);
-    const { t } = useTranslation();
 
     const handleSubmit = useCallback(
         (formData: Record<string, unknown>) => {
@@ -22,6 +23,7 @@ const LoginPage: React.FC = () => {
     );
 
     useEffect(() => {
+        // 登录成功，跳转到控制台
         if (loginState.resp?.code == ResCode.SUCCESS) navigate('/dashboard');
     }, [loginState.resp?.code, navigate]);
 
