@@ -15,6 +15,8 @@ interface ExpandedRows {
 }
 
 const MenuManagementPage: React.FC = () => {
+    const { t } = useTranslation();
+
     const tableState = useAxios<Res<SysMenu[]>>({ url: API.MENU_LIST, method: 'get' });
     const updateState = useAxios<Res<undefined>>({});
 
@@ -27,8 +29,6 @@ const MenuManagementPage: React.FC = () => {
     const menuTree = useMemo(() => {
         if (tableState.resp?.data) return buildMenuTree(tableState.resp?.data);
     }, [tableState.resp?.data]);
-
-    const { t } = useTranslation();
 
     const columns: ColumnsType<SysMenu> = [
         {

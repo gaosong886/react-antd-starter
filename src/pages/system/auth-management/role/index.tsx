@@ -9,14 +9,14 @@ import { API } from '../../../../api/constants';
 import { ResCode, Res, SysRole } from '../../../../api/types';
 
 const RoleManagementPage: React.FC = () => {
+    const { t } = useTranslation();
+
     const tableState = useAxios<Res<SysRole[]>>({ url: API.ROLE_LIST, method: 'get', manual: false });
     const deleteState = useAxios<Res<undefined>>({});
 
     const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState<SysRole>();
     
-    const { t } = useTranslation();
-
     const columns: ColumnsType<SysRole> = [
         {
             title: t("form.common.name"),

@@ -9,6 +9,8 @@ import { AccountStatus, Pagination, ResCode, Res, SysUser } from '../../../../ap
 import { API } from '../../../../api/constants';
 
 const UserManagementPage: React.FC = () => {
+    const { t } = useTranslation();
+
     const [pagination, setPagination] = useState({ page: 1, pageSize: 50 });
     const [query, setQuery] = useState('');
     const [inputStatus, setInputStatus] = useState<'' | 'warning' | 'error' | undefined>('');
@@ -22,8 +24,6 @@ const UserManagementPage: React.FC = () => {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState<SysUser>();
-
-    const { t } = useTranslation();
 
     const columns: ColumnsType<SysUser> = [
         {

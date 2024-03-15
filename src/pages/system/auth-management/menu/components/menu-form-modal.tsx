@@ -19,6 +19,8 @@ export interface MenuFormModalProps {
 }
 
 export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModalProps) => {
+    const { t } = useTranslation();
+
     const [type, setType] = useState(props.record?.type || SysMenuType.DIRECTORY);
     const [icon, setIcon] = useState(props.record?.icon);
 
@@ -26,8 +28,6 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
     const saveRecordState = useAxios<Res<SysMenu>>({});
 
     const validationMsgs = useMemo(() => (saveRecordState.resp?.data as ValidError)?.errors || [], [saveRecordState.resp?.data]);
-
-    const { t } = useTranslation();
 
     const onFinish = useCallback(
         async (value: object) => {

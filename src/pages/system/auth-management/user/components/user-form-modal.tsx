@@ -16,9 +16,11 @@ export interface UserFormModalProps {
 }
 
 export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModalProps) => {
+    const { t } = useTranslation();
+
     const roleState = useAxios<Res<SysRole[]>>({ url: API.ROLE_LIST, method: 'get', manual: false });
-    const saveRecordState = useAxios<Res<SysUser>>({});
     const photoState = useAxios<Res<UploadFile>>({ url: API.USER_PHOTO, method: 'post' });
+    const saveRecordState = useAxios<Res<SysUser>>({});
 
     const [photoUrl, setPhotoUrl] = useState<string>(props.record?.photo || '');
     const [uploadError, setUploadError] = useState('');
@@ -27,8 +29,6 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
     const uploadedFileList = useMemo((): UploadFile<any>[] => {
         return photoUrl ? [{ status: 'done', uid: 'photo', name: 'photo', url: photoUrl }] : [];
     }, [photoUrl]);
-
-    const { t } = useTranslation();
 
     const uploadRequest = useCallback(
         async (options: any) => {

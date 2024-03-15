@@ -16,13 +16,13 @@ export interface RoleFormModalProps {
 }
 
 export const RoleFormModal: React.FC<RoleFormModalProps> = (props: RoleFormModalProps) => {
+    const { t } = useTranslation();
+
     const menuState = useAxios<Res<SysMenu[]>>({ url: API.MENU_LIST, method: 'get', manual: false });
     const saveRecordState = useAxios<Res<SysRole>>({});
 
     const [checkedKeys, setCheckedKeys] = useState(props.record?.menus.map((item) => item.id) || []);
     const validationMsgs = useMemo(() => (saveRecordState.resp?.data as ValidError)?.errors || [], [saveRecordState.resp?.data]);
-
-    const { t } = useTranslation();
 
     const menuTree = useMemo(() => {
         if (menuState.resp?.data) {
