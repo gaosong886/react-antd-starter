@@ -1,12 +1,17 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { API } from '../../api';
 import { AuthToken } from '../../utils/auth-token';
+import { JwtToken, ResCode, Res } from '../../api/types';
+import { API } from '../../api/constants';
 
-const AUTH_EXLUDE_URLS = [API.URL.AUTH_LOGIN, API.URL.AUTH_REFRESH];
+const AUTH_EXLUDE_URLS = [API.AUTH_LOGIN, API.AUTH_REFRESH];
 
+// 是否正在刷新 JWT
 let isRefreshing = false;
-let requests: ((data?: API.JwtToken) => void)[] = [];
 
+// 初始化请求队列
+let requests: ((data?: JwtToken) => void)[] = [];
+
+// 初始化 axios 实例
 const axiosInstance = axios.create({ baseURL: import.meta.env.VITE_BASE_API_URL, timeout: 3000 });
 
 axiosInstance.interceptors.request.use((config) => {
@@ -27,7 +32,7 @@ axiosInstance.interceptors.request.use((config) => {
     if (!isRefreshing) {
         isRefreshing = true;
         axiosInstance
-            .post(API.URL.AUTH_REFRESH, { refreshToken: token.refreshToken })
+            .post(API.AUTH_REFRESH, { refreshToken: token.refreshToken })
             .then((res) => {
                 AuthToken.save(res.data.data);
                 isRefreshing = false;
@@ -44,7 +49,7 @@ axiosInstance.interceptors.request.use((config) => {
     }
 
     const retry = new Promise<InternalAxiosRequestConfig<unknown>>((resolve) => {
-        requests.push((data?: API.JwtToken) => {
+        requests.push((data?: JwtToken) => {
             if (data) config.headers['Authorization'] = `${data.tokenType} ${data.accessToken}`;
             resolve(config);
         });
@@ -55,7 +60,7 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
     (response: AxiosResponse) => {
         const { code, data, message } = response.data;
-        if (code === API.CODE.SUCCESS && response.config.url === API.URL.AUTH_LOGIN) AuthToken.save(data);
+        if (code === ResCode.SUCCESS && response.config.url === API.AUTH_LOGIN) AuthToken.save(data);
 
         window.dispatchEvent(
             new CustomEvent('requestSuccess', {
@@ -70,7 +75,7 @@ axiosInstance.interceptors.response.use(
     },
     (error: AxiosError) => {
         const { response, message } = error;
-        const responseMessage = (response?.data as API.Res<unknown>)?.message;
+        const responseMessage = (response?.data as Res<unknown>)?.message;
         window.dispatchEvent(
             new CustomEvent('requestError', {
                 detail: {

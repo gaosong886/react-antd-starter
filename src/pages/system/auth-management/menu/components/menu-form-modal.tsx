@@ -1,5 +1,4 @@
 import { ModalForm, ProForm, ProFormRadio, ProFormSelect, ProFormSwitch, ProFormText, ProFormTreeSelect } from '@ant-design/pro-components';
-import { API } from '../../../../../api';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAxios } from '../../../../../hooks/axios';
 import { Alert, Spin } from 'antd';
@@ -7,32 +6,34 @@ import React from 'react';
 import appRoutes from '../../../../../router/config';
 import IconSelector from '../../../../../components/icon-selector';
 import { useTranslation } from 'react-i18next';
+import { ResCode, Res, SysMenuType, SysMenu, SysPermission, ValidError } from '../../../../../api/types';
+import { API } from '../../../../../api/constants';
 
 export interface MenuFormModalProps {
     visible: boolean;
     parentId: number;
-    record?: API.SysMenu;
-    menuTree: API.SysMenu[];
+    record?: SysMenu;
+    menuTree: SysMenu[];
     onOpenChange: (visible: boolean) => void;
     onFinish: () => void;
 }
 
 export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModalProps) => {
-    const [type, setType] = useState(props.record?.type || API.SYS_MENU_TYPE.DIRECTORY);
+    const [type, setType] = useState(props.record?.type || SysMenuType.DIRECTORY);
     const [icon, setIcon] = useState(props.record?.icon);
 
-    const permState = useAxios<API.Res<API.SysPermission[]>>({ url: API.URL.PERMISSION_LIST, method: 'get' });
-    const saveRecordState = useAxios<API.Res<API.SysMenu>>({});
+    const permState = useAxios<Res<SysPermission[]>>({ url: API.PERMISSION_LIST, method: 'get' });
+    const saveRecordState = useAxios<Res<SysMenu>>({});
 
-    const validationMsgs = useMemo(() => (saveRecordState.resp?.data as API.ValidError)?.errors || [], [saveRecordState.resp?.data]);
+    const validationMsgs = useMemo(() => (saveRecordState.resp?.data as ValidError)?.errors || [], [saveRecordState.resp?.data]);
 
     const { t } = useTranslation();
 
     const onFinish = useCallback(
         async (value: object) => {
-            const url = props.record ? `${API.URL.MENU_UPDATE}/${props.record.id}` : API.URL.MENU_CREATE;
+            const url = props.record ? `${API.MENU_UPDATE}/${props.record.id}` : API.MENU_CREATE;
             const res = await saveRecordState.fetchAsync({ url: url, method: 'post', data: { ...value, type, icon } });
-            if (res?.code === API.CODE.SUCCESS) {
+            if (res?.code === ResCode.SUCCESS) {
                 props.onFinish();
                 return true;
             }
@@ -61,7 +62,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
             if (props.visible) {
                 permState.fetch();
                 setIcon(props.record?.icon);
-                setType(props.record?.type || API.SYS_MENU_TYPE.DIRECTORY);
+                setType(props.record?.type || SysMenuType.DIRECTORY);
             } else {
                 saveRecordState.reset();
                 permState.reset();
@@ -101,9 +102,9 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
                             onChange: (e) => setType(e.target.value),
                         }}
                         options={[
-                            { label: t('form.menu.type.directory'), value: API.SYS_MENU_TYPE.DIRECTORY },
-                            { label: t('form.menu.type.page'), value: API.SYS_MENU_TYPE.PAGE },
-                            { label: t('form.menu.type.operation'), value: API.SYS_MENU_TYPE.OPERATION },
+                            { label: t('form.menu.type.directory'), value: SysMenuType.DIRECTORY },
+                            { label: t('form.menu.type.page'), value: SysMenuType.PAGE },
+                            { label: t('form.menu.type.operation'), value: SysMenuType.OPERATION },
                         ]}
                         disabled={props.record != null}
                         required
@@ -138,7 +139,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
                             treeDefaultExpandAll: true,
                             treeData: props.menuTree,
                         }}
-                        rules={[{ required: type === API.SYS_MENU_TYPE.OPERATION }]}
+                        rules={[{ required: type === SysMenuType.OPERATION }]}
                     />
                 </ProForm.Group>
                 <ProForm.Group>
@@ -149,15 +150,15 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
                         placeholder={t('hint.pleaseInput')}
                         fieldProps={{ type: 'number' }}
                     />
-                    {type != API.SYS_MENU_TYPE.OPERATION && (
+                    {type != SysMenuType.OPERATION && (
                         <ProForm.Item label={t('form.menu.icon')}>
                             <IconSelector iconType={'Outlined'} defaultValue={icon} setValue={setIcon} />
                         </ProForm.Item>
                     )}
                 </ProForm.Group>
-                <ProForm.Group>{type != API.SYS_MENU_TYPE.OPERATION && <ProFormSwitch name='hidden' label={t('form.menu.hidden')} />}</ProForm.Group>
+                <ProForm.Group>{type != SysMenuType.OPERATION && <ProFormSwitch name='hidden' label={t('form.menu.hidden')} />}</ProForm.Group>
                 <ProForm.Group>
-                    {type == API.SYS_MENU_TYPE.PAGE && (
+                    {type == SysMenuType.PAGE && (
                         <ProFormTreeSelect
                             name='path'
                             label={t('form.menu.path')}
@@ -174,7 +175,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
                             rules={[{ required: true }]}
                         />
                     )}
-                    {type == API.SYS_MENU_TYPE.OPERATION && (
+                    {type == SysMenuType.OPERATION && (
                         <ProFormSelect
                             name='permissionIds'
                             width='xl'

@@ -1,37 +1,36 @@
 import { ColumnsType } from 'antd/es/table';
-import { API } from '../../../../api';
 import { Button, Flex, Popconfirm, Spin, Switch, Table, Tag } from 'antd/lib';
 import { useAxios } from '../../../../hooks/axios';
 import Icon, { NodeExpandOutlined, PlusOutlined, SyncOutlined } from '@ant-design/icons';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { MenuFormModal } from './components/menu-form-modal';
-import * as icons from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { buildMenuTree } from '../../../../utils/menu-tree';
+import { API } from '../../../../api/constants';
+import { ResCode, Res, SysMenuType, SysMenu } from '../../../../api/types';
+import * as icons from '@ant-design/icons';
 
 interface ExpandedRows {
     keys: number[];
 }
 
 const MenuManagementPage: React.FC = () => {
-    const tableState = useAxios<API.Res<API.SysMenu[]>>({ url: API.URL.MENU_LIST, method: 'get' });
-    const updateState = useAxios<API.Res<undefined>>({});
+    const tableState = useAxios<Res<SysMenu[]>>({ url: API.MENU_LIST, method: 'get' });
+    const updateState = useAxios<Res<undefined>>({});
 
-    const [modalData, setModalData] = useState<API.SysMenu>();
+    const [modalData, setModalData] = useState<SysMenu>();
     const [modalVisible, setModalVisible] = useState(false);
 
     const [parentId, setParentId] = useState(0);
     const [expandedRows, setExpandedRows] = useState<ExpandedRows>();
 
     const menuTree = useMemo(() => {
-        if (tableState.resp?.data) {
-            return buildMenuTree(tableState.resp?.data);
-        }
+        if (tableState.resp?.data) return buildMenuTree(tableState.resp?.data);
     }, [tableState.resp?.data]);
 
     const { t } = useTranslation();
 
-    const columns: ColumnsType<API.SysMenu> = [
+    const columns: ColumnsType<SysMenu> = [
         {
             title: t('form.common.name'),
             dataIndex: 'name',
@@ -44,13 +43,13 @@ const MenuManagementPage: React.FC = () => {
             key: 'type',
             width: 90,
             render: (value: unknown) => {
-                if (value === API.SYS_MENU_TYPE.DIRECTORY)
+                if (value === SysMenuType.DIRECTORY)
                     return (
                         <Tag bordered={true} color='processing'>
                             {t('form.menu.type.directory')}
                         </Tag>
                     );
-                else if (value === API.SYS_MENU_TYPE.PAGE)
+                else if (value === SysMenuType.PAGE)
                     return (
                         <Tag bordered={true} color='success'>
                             {t('form.menu.type.page')}
@@ -69,15 +68,15 @@ const MenuManagementPage: React.FC = () => {
             dataIndex: 'hidden',
             key: 'hidden',
             width: 100,
-            render: (value: unknown, record: API.SysMenu) => {
-                if (record.type === API.SYS_MENU_TYPE.OPERATION) return;
+            render: (value: unknown, record: SysMenu) => {
+                if (record.type === SysMenuType.OPERATION) return;
                 return (
                     <Switch
                         defaultChecked={value === 1}
                         onChange={(_checked, event) => {
                             event.stopPropagation();
                             updateState.fetch({
-                                url: `${API.URL.MENU_HIDE}/${record.id}`,
+                                url: `${API.MENU_HIDE}/${record.id}`,
                                 method: 'post',
                             });
                         }}
@@ -104,7 +103,7 @@ const MenuManagementPage: React.FC = () => {
             title: t('form.menu.permissions'),
             dataIndex: 'permissions',
             key: 'permissions',
-            render: (_value: unknown, record: API.SysMenu) => {
+            render: (_value: unknown, record: SysMenu) => {
                 return record.permissions?.map((item) => (
                     <Tag bordered={true} color='error' key={item.name}>
                         {item.name}
@@ -124,10 +123,10 @@ const MenuManagementPage: React.FC = () => {
             key: 'x',
             width: 240,
             fixed: 'right',
-            render: (_value: unknown, record: API.SysMenu) => {
+            render: (_value: unknown, record: SysMenu) => {
                 return (
                     <Flex gap='small' justify='end'>
-                        {record.type != API.SYS_MENU_TYPE.OPERATION && (
+                        {record.type != SysMenuType.OPERATION && (
                             <Button
                                 onClick={(event) => {
                                     event.stopPropagation();
@@ -189,10 +188,10 @@ const MenuManagementPage: React.FC = () => {
 
     const handleDelete = async (id: number) => {
         const res = await updateState.fetchAsync({
-            url: `${API.URL.MENU_DELETE}/${id}`,
+            url: `${API.MENU_DELETE}/${id}`,
             method: 'post',
         });
-        if (res?.code === API.CODE.SUCCESS) tableState.fetch();
+        if (res?.code === ResCode.SUCCESS) tableState.fetch();
     };
 
     useEffect(() => {

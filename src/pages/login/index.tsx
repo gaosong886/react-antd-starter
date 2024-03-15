@@ -2,26 +2,27 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useAxios } from '../../hooks/axios';
-import { API } from '../../api';
 import { useNavigate } from 'react-router-dom';
 import { Alert, Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { API } from '../../api/constants';
+import { JwtToken, ResCode, Res, ValidError } from '../../api/types';
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();
-    const loginState = useAxios<API.Res<API.JwtToken | API.ValidError>>({});
-    const validationMsgs = useMemo(() => (loginState.resp?.data as API.ValidError)?.errors || [], [loginState.resp?.data]);
+    const loginState = useAxios<Res<JwtToken | ValidError>>({ url: API.AUTH_LOGIN, method: 'post' });
+    const validationMsgs = useMemo(() => (loginState.resp?.data as ValidError)?.errors || [], [loginState.resp?.data]);
     const { t } = useTranslation();
 
     const handleSubmit = useCallback(
         (formData: Record<string, unknown>) => {
-            loginState.fetch({ url: API.URL.AUTH_LOGIN, method: 'post', data: formData });
+            loginState.fetch({ data: formData });
         },
         [loginState]
     );
 
     useEffect(() => {
-        if (loginState.resp?.code == API.CODE.SUCCESS) navigate('/dashboard');
+        if (loginState.resp?.code == ResCode.SUCCESS) navigate('/dashboard');
     }, [loginState.resp?.code, navigate]);
 
     return (

@@ -1,11 +1,10 @@
 import { PageContainer, ProLayout } from '@ant-design/pro-components';
 import { useEffect, useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { API } from '../../api';
 import { useAxios } from '../../hooks/axios';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from '../../store';
-import { useCommonStore } from '../../hooks/common-store';
+import { useBaseStore } from '../../hooks/base-store';
 import { clearUserInfo, setUserInfo } from '../../store/slices/user';
 import { Dropdown, Flex } from 'antd';
 import Icon, { GithubOutlined, LogoutOutlined } from '@ant-design/icons';
@@ -14,17 +13,19 @@ import { clearMenuInfo, setMenuInfo } from '../../store/slices/menu';
 import * as icons from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { buildMenuTree } from '../../utils/menu-tree';
+import { Res, ResCode, SysMenu, SysUser } from '../../api/types';
+import { API } from '../../api/constants';
 
-const CommonLayout: React.FC = () => {
+const BaseLayout: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { t } = useTranslation();
 
     const dispatch: Dispatch = useDispatch();
-    const { userInfo, menuInfo } = useCommonStore();
+    const { userInfo, menuInfo } = useBaseStore();
 
-    const userState = useAxios<API.Res<API.SysUser>>({ url: API.URL.USER_PROFILE, method: 'get' });
-    const menuState = useAxios<API.Res<API.SysMenu[]>>({ url: API.URL.MENU_MENU, method: 'get' });
+    const userState = useAxios<Res<SysUser>>({ url: API.USER_PROFILE, method: 'get' });
+    const menuState = useAxios<Res<SysMenu[]>>({ url: API.MENU_MENU, method: 'get' });
 
     const menuTree = useMemo(() => {
         if (menuState.resp?.data) {
@@ -38,7 +39,7 @@ const CommonLayout: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (userState.resp?.code == API.CODE.SUCCESS) dispatch(setUserInfo(userState.resp.data));
+        if (userState.resp?.code == ResCode.SUCCESS) dispatch(setUserInfo(userState.resp.data));
     }, [dispatch, userState.resp]);
 
     useEffect(() => {
@@ -143,4 +144,4 @@ const CommonLayout: React.FC = () => {
         </div>
     );
 };
-export default CommonLayout;
+export default BaseLayout;

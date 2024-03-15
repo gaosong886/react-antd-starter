@@ -1,27 +1,28 @@
 import { Button, Flex, Spin, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
-import { API } from '../../api';
 import { useAxios } from '../../hooks/axios';
 import { PauseCircleTwoTone, PlayCircleTwoTone, SyncOutlined } from '@ant-design/icons';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ResCode, Res, ScheduledTask } from '../../api/types';
+import { API } from '../../api/constants';
 
 const SchedulePage: React.FC = () => {
-    const tableState = useAxios<API.Res<API.ScheduledTask[]>>({
-        url: API.URL.SCHEDULE_LIST,
+    const tableState = useAxios<Res<ScheduledTask[]>>({
+        url: API.SCHEDULE_LIST,
         method: 'get',
         manual: false,
     });
 
-    const switchState = useAxios<API.Res<undefined>>({
-        url: API.URL.SCHEDULE_SWITCH,
+    const switchState = useAxios<Res<undefined>>({
+        url: API.SCHEDULE_SWITCH,
         method: 'post',
         manual: true,
     });
 
     const { t } = useTranslation();
 
-    const columns: ColumnsType<API.ScheduledTask> = [
+    const columns: ColumnsType<ScheduledTask> = [
         {
             title: t('form.common.name'),
             dataIndex: 'name',
@@ -107,7 +108,7 @@ const SchedulePage: React.FC = () => {
     const onSwitch = useCallback(
         async (name: string) => {
             const res = await switchState.fetchAsync({ data: { name } });
-            if (res?.code === API.CODE.SUCCESS) tableState.fetch();
+            if (res?.code === ResCode.SUCCESS) tableState.fetch();
         },
         [switchState, tableState]
     );

@@ -13,8 +13,9 @@ const resources = {
     },
 };
 
+// 多语言支持
 i18n.use(initReactI18next)
-    .use(new LanguageDetector(null, {order: ['querystring', 'navigator', 'htmlTag']}))
+    .use(new LanguageDetector(null, { order: ['querystring', 'navigator', 'htmlTag'] }))
     .init({
         resources,
         fallbackLng: 'en',

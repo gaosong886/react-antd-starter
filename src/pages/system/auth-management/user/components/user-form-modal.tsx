@@ -1,28 +1,29 @@
 import { ModalForm, ProForm, ProFormSelect, ProFormSwitch, ProFormText } from '@ant-design/pro-components';
-import { API } from '../../../../../api';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAxios } from '../../../../../hooks/axios';
 import { Alert, Spin, Upload, UploadFile } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { RcFile } from 'antd/es/upload';
 import { useTranslation } from 'react-i18next';
+import { ResCode, Res, SysRole, SysUser, ValidError } from '../../../../../api/types';
+import { API } from '../../../../../api/constants';
 
 export interface UserFormModalProps {
     visible: boolean;
-    record?: API.SysUser;
+    record?: SysUser;
     onOpenChange: (visible: boolean) => void;
     onFinish: () => void;
 }
 
 export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModalProps) => {
-    const roleState = useAxios<API.Res<API.SysRole[]>>({ url: API.URL.ROLE_LIST, method: 'get', manual: false });
-    const saveRecordState = useAxios<API.Res<API.SysUser>>({});
-    const photoState = useAxios<API.Res<UploadFile>>({ url: API.URL.USER_PHOTO, method: 'post' });
+    const roleState = useAxios<Res<SysRole[]>>({ url: API.ROLE_LIST, method: 'get', manual: false });
+    const saveRecordState = useAxios<Res<SysUser>>({});
+    const photoState = useAxios<Res<UploadFile>>({ url: API.USER_PHOTO, method: 'post' });
 
     const [photoUrl, setPhotoUrl] = useState<string>(props.record?.photo || '');
     const [uploadError, setUploadError] = useState('');
 
-    const validationMsgs = useMemo(() => (saveRecordState.resp?.data as API.ValidError)?.errors || [], [saveRecordState.resp?.data]);
+    const validationMsgs = useMemo(() => (saveRecordState.resp?.data as ValidError)?.errors || [], [saveRecordState.resp?.data]);
     const uploadedFileList = useMemo((): UploadFile<any>[] => {
         return photoUrl ? [{ status: 'done', uid: 'photo', name: 'photo', url: photoUrl }] : [];
     }, [photoUrl]);
@@ -49,13 +50,13 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
 
     const onFinish = useCallback(
         async (value: any) => {
-            const url = props.record ? `${API.URL.USER_UPDATE}/${props.record.id}` : API.URL.USER_CREATE;
+            const url = props.record ? `${API.USER_UPDATE}/${props.record.id}` : API.USER_CREATE;
             const res = await saveRecordState.fetchAsync({
                 url: url,
                 method: 'post',
                 data: { ...value, photo: photoUrl, accountStatus: value.accountStatus ? -1 : 0 },
             });
-            if (res?.code === API.CODE.SUCCESS) {
+            if (res?.code === ResCode.SUCCESS) {
                 props.onFinish();
                 return true;
             }
@@ -106,7 +107,7 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
                     <ProForm.Item label={t('form.user.photo')} tooltip={t('hint.profilePhoto')} required>
                         <Upload
                             accept='image/png, image/jpeg'
-                            action={API.URL.USER_PHOTO}
+                            action={API.USER_PHOTO}
                             listType='picture-circle'
                             maxCount={1}
                             customRequest={uploadRequest}

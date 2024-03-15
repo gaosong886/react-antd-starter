@@ -1,24 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
-import { UseAxiosState } from './interface';
+import { Action, ActionType, UseAxiosState } from './types';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 import axiosInstance from './config';
-
-interface Action<T> {
-    type: string;
-    payload?: Payload<T>;
-}
-
-interface Payload<T> {
-    err?: Error;
-    resp?: T;
-}
-
-enum ActionType {
-    REQUEST_START = 'REQUEST_START',
-    REQUEST_SUCCESS = 'REQUEST_SUCCESS',
-    REQUEST_ERROR = 'REQUEST_ERROR',
-    RESET = 'RESET',
-}
 
 export function useAxios<T>({ manual = true, cancelPrev = true, ...axiosRequestConfig }): UseAxiosState<T> {
     const reducer = (state: any, action: Action<T>) => {

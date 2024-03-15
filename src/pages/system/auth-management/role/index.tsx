@@ -1,22 +1,23 @@
 import { ColumnsType } from 'antd/es/table';
-import { API } from '../../../../api';
 import { Button, Flex, Popconfirm, Spin, Table } from 'antd/lib';
 import { useAxios } from '../../../../hooks/axios';
 import { PlusOutlined, SyncOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { RoleFormModal } from './components/role-form-modal';
 import { useTranslation } from 'react-i18next';
+import { API } from '../../../../api/constants';
+import { ResCode, Res, SysRole } from '../../../../api/types';
 
 const RoleManagementPage: React.FC = () => {
-    const tableState = useAxios<API.Res<API.SysRole[]>>({ url: API.URL.ROLE_LIST, method: 'get', manual: false });
-    const deleteState = useAxios<API.Res<undefined>>({});
+    const tableState = useAxios<Res<SysRole[]>>({ url: API.ROLE_LIST, method: 'get', manual: false });
+    const deleteState = useAxios<Res<undefined>>({});
 
     const [modalVisible, setModalVisible] = useState(false);
-    const [modalData, setModalData] = useState<API.SysRole>();
+    const [modalData, setModalData] = useState<SysRole>();
     
     const { t } = useTranslation();
 
-    const columns: ColumnsType<API.SysRole> = [
+    const columns: ColumnsType<SysRole> = [
         {
             title: t("form.common.name"),
             dataIndex: 'name',
@@ -47,7 +48,7 @@ const RoleManagementPage: React.FC = () => {
             key: 'x',
             width: 170,
             fixed: 'right',
-            render: (_value: unknown, record: API.SysRole) => {
+            render: (_value: unknown, record: SysRole) => {
                 return (
                     <Flex gap='small'>
                         <Button
@@ -91,10 +92,10 @@ const RoleManagementPage: React.FC = () => {
 
     const handleDelete = async (id: number) => {
         const res = await deleteState.fetchAsync({
-            url: `${API.URL.ROLE_DELETE}/${id}`,
+            url: `${API.ROLE_DELETE}/${id}`,
             method: 'post',
         });
-        if (res?.code === API.CODE.SUCCESS) tableState.fetch();
+        if (res?.code === ResCode.SUCCESS) tableState.fetch();
     };
 
     return (

@@ -1,30 +1,31 @@
 import { useCallback, useEffect, useState } from 'react';
-import { API } from '../../../../api';
 import { useAxios } from '../../../../hooks/axios';
 import { Button, Flex, Popconfirm, Tag, Image, Spin, Input } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { PlusOutlined, SyncOutlined } from '@ant-design/icons';
 import { UserFormModal } from './components/user-form-modal';
 import { useTranslation } from 'react-i18next';
+import { AccountStatus, Pagination, ResCode, Res, SysUser } from '../../../../api/types';
+import { API } from '../../../../api/constants';
 
 const UserManagementPage: React.FC = () => {
     const [pagination, setPagination] = useState({ page: 1, pageSize: 50 });
     const [query, setQuery] = useState('');
     const [inputStatus, setInputStatus] = useState<'' | 'warning' | 'error' | undefined>('');
-    const tableState = useAxios<API.Res<API.Pagi<API.SysUser>>>({
-        url: API.URL.USER_PAGE,
+    const tableState = useAxios<Res<Pagination<SysUser>>>({
+        url: API.USER_PAGE,
         data: { ...pagination, query },
         method: 'post',
         manual: true,
     });
-    const deleteState = useAxios<API.Res<undefined>>({});
+    const deleteState = useAxios<Res<undefined>>({});
 
     const [modalVisible, setModalVisible] = useState(false);
-    const [modalData, setModalData] = useState<API.SysUser>();
+    const [modalData, setModalData] = useState<SysUser>();
 
     const { t } = useTranslation();
 
-    const columns: ColumnsType<API.SysUser> = [
+    const columns: ColumnsType<SysUser> = [
         {
             title: t('form.user.photo'),
             dataIndex: 'photo',
@@ -51,7 +52,7 @@ const UserManagementPage: React.FC = () => {
             dataIndex: 'roles',
             key: 'roles',
             width: 200,
-            render: (_value: unknown, record: API.SysUser) => {
+            render: (_value: unknown, record: SysUser) => {
                 return (
                     <>
                         {record.roles?.map((item) => (
@@ -69,7 +70,7 @@ const UserManagementPage: React.FC = () => {
             key: 'accountStatus',
             width: 80,
             render: (value: unknown) => {
-                if (value == API.ACCOUNT_STATUS.ACTIVE)
+                if (value == AccountStatus.ACTIVE)
                     return (
                         <Tag bordered={true} color='success'>
                             {t('status.normal')}
@@ -107,7 +108,7 @@ const UserManagementPage: React.FC = () => {
             key: 'x',
             width: 170,
             fixed: 'right',
-            render: (_value: unknown, record: API.SysUser) => {
+            render: (_value: unknown, record: SysUser) => {
                 return (
                     <Flex gap='small'>
                         <Button
@@ -151,10 +152,10 @@ const UserManagementPage: React.FC = () => {
 
     const handleDelete = async (id: number) => {
         const res = await deleteState.fetchAsync({
-            url: `${API.URL.USER_DELETE}/${id}`,
+            url: `${API.USER_DELETE}/${id}`,
             method: 'post',
         });
-        if (res?.code === API.CODE.SUCCESS) tableState.fetch();
+        if (res?.code === ResCode.SUCCESS) tableState.fetch();
     };
 
     const onPaginationChange = useCallback((page: number, pageSize: number) => {

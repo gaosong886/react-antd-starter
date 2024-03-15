@@ -1,3 +1,7 @@
+/**
+ * 工具类，用来操作 localStorage
+ * 
+ */
 export class LocalStorage {
     static clear(): void {
         localStorage.clear();

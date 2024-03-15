@@ -3,16 +3,17 @@ import { Button, Flex, Input, Popconfirm, Spin } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { SyncOutlined } from '@ant-design/icons';
 import { useAxios } from '../../../hooks/axios';
-import { API } from '../../../api';
 import { useTranslation } from 'react-i18next';
+import { Pagination, ResCode, Res, SysLog } from '../../../api/types';
+import { API } from '../../../api/constants';
 
 const UserManagementPage: React.FC = () => {
     const [pagination, setPagination] = useState({ page: 1, pageSize: 50 });
     const [query, setQuery] = useState('');
     const [inputStatus, setInputStatus] = useState<'' | 'warning' | 'error' | undefined>('');
 
-    const tableState = useAxios<API.Res<API.Pagi<API.SysLog>>>({
-        url: API.URL.LOG_PAGE,
+    const tableState = useAxios<Res<Pagination<SysLog>>>({
+        url: API.LOG_PAGE,
         data: { ...pagination, query },
         method: 'post',
         manual: true,
@@ -20,9 +21,9 @@ const UserManagementPage: React.FC = () => {
 
     const { t } = useTranslation();
 
-    const truncateState = useAxios<API.Res<undefined>>({ url: API.URL.LOG_TRUNCATE, method: 'post', manual: true });
+    const truncateState = useAxios<Res<undefined>>({ url: API.LOG_TRUNCATE, method: 'post', manual: true });
 
-    const columns: ColumnsType<API.SysLog> = [
+    const columns: ColumnsType<SysLog> = [
         {
             title: t('form.user.userId'),
             dataIndex: 'userId',
@@ -82,7 +83,7 @@ const UserManagementPage: React.FC = () => {
 
     const onDelete = useCallback(async () => {
         const res = await truncateState.fetchAsync();
-        if (res?.code === API.CODE.SUCCESS) tableState.fetch();
+        if (res?.code === ResCode.SUCCESS) tableState.fetch();
     }, [tableState, truncateState]);
 
     useEffect(() => {

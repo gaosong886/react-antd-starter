@@ -1,27 +1,32 @@
-import { API } from '../api';
+import { SysMenu } from '../api/types';
 
+// 包含选中状态的 SysMenu 树形结构
 export interface MenuTree {
-    tree: API.SysMenu[];
+    tree: SysMenu[];
     checked: number[];
     halfChecked: number[];
 }
 
 /**
- * Build tree structure.
+ * 构造 SysMenu 的树形结构，作为前端组件的 props
  *
- * @param nodes Array of nodes.
- * @returns Array of built tree structure.
+ * @param nodes 节点列表
+ * @param selectedSet 选中的节点集合
+ * @returns MenuTree
  *
  */
-export const buildMenuTree = (nodes: API.SysMenu[], selectedSet?: Set<number>): MenuTree => {
+export const buildMenuTree = (nodes: SysMenu[], selectedSet?: Set<number>): MenuTree => {
     if (!nodes) return { tree: [], checked: [], halfChecked: [] };
 
+    // 选中的节点列表
     const checked: number[] = [];
+
+    // 半选中的节点列表
     const halfChecked: number[] = [];
 
-    // Recursively build children nodes.
-    const buildChildren = (node: API.SysMenu, nodes: API.SysMenu[]) => {
-        let children: API.SysMenu[] | undefined;
+    // 递归构建各个节点
+    const buildChildren = (node: SysMenu, nodes: SysMenu[]) => {
+        let children: SysMenu[] | undefined;
         let selectedChildCount = 0;
         nodes.forEach((o) => {
             if (o.parentId === node.id) {
@@ -32,6 +37,8 @@ export const buildMenuTree = (nodes: API.SysMenu[], selectedSet?: Set<number>): 
             }
         });
         node.children = children;
+
+        // 检查节点的选中状态
         if (selectedSet?.has(node.id)) {
             if (children && selectedChildCount != 0 && selectedChildCount < children.length) {
                 halfChecked.push(node.id);
@@ -43,7 +50,7 @@ export const buildMenuTree = (nodes: API.SysMenu[], selectedSet?: Set<number>): 
         return node;
     };
 
-    const menuTree: API.SysMenu[] = [];
+    const menuTree: SysMenu[] = [];
     nodes.forEach((item) => {
         if (item.parentId == 0) menuTree.push(buildChildren(item, nodes));
     });

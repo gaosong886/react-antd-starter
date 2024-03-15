@@ -1,25 +1,26 @@
 import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-components';
-import { API } from '../../../../../api';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAxios } from '../../../../../hooks/axios';
 import { Alert, Card, Spin, Tree, TreeProps } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import { useTranslation } from 'react-i18next';
 import { buildMenuTree } from '../../../../../utils/menu-tree';
+import { ResCode, Res, SysMenu, SysRole, ValidError } from '../../../../../api/types';
+import { API } from '../../../../../api/constants';
 
 export interface RoleFormModalProps {
     visible: boolean;
-    record?: API.SysRole;
+    record?: SysRole;
     onOpenChange: (visible: boolean) => void;
     onFinish: () => void;
 }
 
 export const RoleFormModal: React.FC<RoleFormModalProps> = (props: RoleFormModalProps) => {
-    const menuState = useAxios<API.Res<API.SysMenu[]>>({ url: API.URL.MENU_LIST, method: 'get', manual: false });
-    const saveRecordState = useAxios<API.Res<API.SysRole>>({});
+    const menuState = useAxios<Res<SysMenu[]>>({ url: API.MENU_LIST, method: 'get', manual: false });
+    const saveRecordState = useAxios<Res<SysRole>>({});
 
     const [checkedKeys, setCheckedKeys] = useState(props.record?.menus.map((item) => item.id) || []);
-    const validationMsgs = useMemo(() => (saveRecordState.resp?.data as API.ValidError)?.errors || [], [saveRecordState.resp?.data]);
+    const validationMsgs = useMemo(() => (saveRecordState.resp?.data as ValidError)?.errors || [], [saveRecordState.resp?.data]);
 
     const { t } = useTranslation();
 
@@ -31,9 +32,9 @@ export const RoleFormModal: React.FC<RoleFormModalProps> = (props: RoleFormModal
 
     const onFinish = useCallback(
         async (value: object) => {
-            const url = props.record ? `${API.URL.ROLE_UPDATE}/${props.record.id}` : API.URL.ROLE_CREATE;
+            const url = props.record ? `${API.ROLE_UPDATE}/${props.record.id}` : API.ROLE_CREATE;
             const res = await saveRecordState.fetchAsync({ url: url, method: 'post', data: { ...value, menuIds: checkedKeys } });
-            if (res?.code === API.CODE.SUCCESS) {
+            if (res?.code === ResCode.SUCCESS) {
                 props.onFinish();
                 return true;
             }
