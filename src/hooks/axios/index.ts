@@ -3,6 +3,13 @@ import { Action, ActionType, UseAxiosState } from './types';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 import axiosInstance from './config';
 
+/**
+ * Axios 钩子
+ *
+ * @param UseAxiosProps
+ * @returns UseAxiosState<T>
+ *
+ */
 export function useAxios<T>({ manual = true, cancelPrev = true, ...axiosRequestConfig }): UseAxiosState<T> {
     const reducer = (state: any, action: Action<T>) => {
         switch (action.type) {
@@ -31,11 +38,17 @@ export function useAxios<T>({ manual = true, cancelPrev = true, ...axiosRequestC
                 type: ActionType.REQUEST_START,
             });
 
-            if (cancelPrev && abortController.current) abortController.current.abort();
+            if (cancelPrev && abortController.current) {
+                abortController.current.abort();
+            }
             abortController.current = new AbortController();
 
             axiosInstance
-                .request<AxiosRequestConfig>({ ...axiosRequestConfig, ...config, signal: abortController.current.signal })
+                .request<AxiosRequestConfig>({
+                    ...axiosRequestConfig,
+                    ...config,
+                    signal: abortController.current.signal,
+                })
                 .then((res) => {
                     dispatch({
                         type: ActionType.REQUEST_SUCCESS,
@@ -58,11 +71,17 @@ export function useAxios<T>({ manual = true, cancelPrev = true, ...axiosRequestC
                 type: ActionType.REQUEST_START,
             });
 
-            if (cancelPrev && abortController.current) abortController.current.abort();
+            if (cancelPrev && abortController.current) {
+                abortController.current.abort();
+            }
             abortController.current = new AbortController();
 
             try {
-                const res = await axiosInstance.request<AxiosRequestConfig>({ ...axiosRequestConfig, ...config, signal: abortController.current.signal });
+                const res = await axiosInstance.request<AxiosRequestConfig>({
+                    ...axiosRequestConfig,
+                    ...config,
+                    signal: abortController.current.signal,
+                });
                 dispatch({
                     type: ActionType.REQUEST_SUCCESS,
                     payload: { resp: res.data as T },
@@ -86,6 +105,7 @@ export function useAxios<T>({ manual = true, cancelPrev = true, ...axiosRequestC
     }, []);
 
     useEffect(() => {
+        // 如果 manual == false，组件挂载后自动发起请求
         if (!manual) fetch(axiosRequestConfig);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
