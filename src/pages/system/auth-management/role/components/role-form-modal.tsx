@@ -108,6 +108,7 @@ export const RoleFormModal: React.FC<RoleFormModalProps> = (props: RoleFormModal
                         <Card bordered={true} style={{ width: 552 }}>
                             <Tree
                                 checkable
+                                // checkStrictly
                                 defaultCheckedKeys={menuTree?.checked || []}
                                 onCheck={onCheck}
                                 fieldNames={{ title: 'name', key: 'id', children: 'children' }}
