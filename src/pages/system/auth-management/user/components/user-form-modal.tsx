@@ -106,6 +106,8 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
                 <ProForm.Group>
                     <ProForm.Item label={t('form.user.photo')} tooltip={t('hint.profilePhoto')} required>
                         <Upload
+                            id='upload'
+                            name='upload'
                             accept='image/png, image/jpeg'
                             action={API.USER_PHOTO}
                             listType='picture-circle'

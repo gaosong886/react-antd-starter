@@ -4,7 +4,7 @@ import Table, { ColumnsType } from 'antd/es/table';
 import { SyncOutlined } from '@ant-design/icons';
 import { useAxios } from '../../../hooks/axios';
 import { useTranslation } from 'react-i18next';
-import { Pagination, ResCode, Res, SysLog } from '../../../api/types';
+import { Pager, ResCode, Res, SysLog } from '../../../api/types';
 import { API } from '../../../api/constants';
 
 const UserManagementPage: React.FC = () => {
@@ -14,7 +14,7 @@ const UserManagementPage: React.FC = () => {
     const [query, setQuery] = useState('');
     const [inputStatus, setInputStatus] = useState<'' | 'warning' | 'error' | undefined>('');
 
-    const tableState = useAxios<Res<Pagination<SysLog>>>({
+    const tableState = useAxios<Res<Pager<SysLog>>>({
         url: API.LOG_PAGE,
         data: { ...pagination, query },
         method: 'post',
@@ -97,6 +97,7 @@ const UserManagementPage: React.FC = () => {
                 <Flex gap='small' justify='space-between'>
                     <Flex gap='small' justify='start'>
                         <Input
+                            name='query'
                             onChange={(e) => {
                                 setInputStatus('');
                                 setQuery(e.target.value.trim());
@@ -122,8 +123,8 @@ const UserManagementPage: React.FC = () => {
                     </Flex>
                     <Flex gap='small' justify='end'>
                         <Popconfirm
-                            title={t("hint.clearAllWarning")}
-                            description={t("hint.clearAllWarningDetail")}
+                            title={t('hint.clearAllWarning')}
+                            description={t('hint.clearAllWarningDetail')}
                             okText={t('function.confirm')}
                             cancelText={t('function.cancel')}
                             onCancel={(e) => {

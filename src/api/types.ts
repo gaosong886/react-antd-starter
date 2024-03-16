@@ -29,7 +29,7 @@ export interface Res<T> {
 }
 
 // 分页对象
-export interface Pagination<T> {
+export interface Pager<T> {
     totalItems?: number;
     totalPages?: number;
     pageSize: number;

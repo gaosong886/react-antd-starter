@@ -8,14 +8,14 @@ import { Skeleton } from 'antd';
 type PageFiles = Record<string, () => Promise<DefaultComponent<unknown>>>;
 
 // 读取 page 目录下的页面文件，得到的页面列表将作为 buildRoutes 的参数生成路由
-const pages = import.meta.glob('../pages/**/index.tsx') as PageFiles;
+const pages = import.meta.glob(['../pages/**/index.tsx', '!**/login/index.tsx']) as PageFiles;
 
 // 构建路由时，不包含的路径
 const EXCLUDE_PATHS = ['login', 'components', 'utils'];
 
 /**
  * 判断当前页面是否在 EXCLUDE_PATHS 里
- * 
+ *
  */
 const isExclude = (path: string): boolean => {
     for (const item of EXCLUDE_PATHS) if (path.includes(item)) return true;
@@ -24,11 +24,12 @@ const isExclude = (path: string): boolean => {
 
 /**
  * 根据传入的文件路径，生成页面的路由路径
- * 
+ *
  * @param path 文件路径
  * @returns 路由路径
- * @example ../pages/dashboard/index.tsx => /dashboard
- * 
+ * @example
+ * ../pages/dashboard/index.tsx => /dashboard
+ *
  */
 const getRoutePath = (path: string): string => {
     const pageIndex = path.indexOf('pages') + 5;
@@ -39,10 +40,10 @@ const getRoutePath = (path: string): string => {
 
 /**
  * 构建路由
- * 
+ *
  * @param pages 页面文件列表
  * @returns 路由对象列表
- * 
+ *
  */
 const buildRoutes = (pages: PageFiles): RouteObject[] => {
     const layouts: RouteObject[] = [];
@@ -60,7 +61,6 @@ const buildRoutes = (pages: PageFiles): RouteObject[] => {
             element: <ComponentNode />,
         });
     }
-
     return layouts;
 };
 

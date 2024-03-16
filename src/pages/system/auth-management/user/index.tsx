@@ -5,7 +5,7 @@ import Table, { ColumnsType } from 'antd/es/table';
 import { PlusOutlined, SyncOutlined } from '@ant-design/icons';
 import { UserFormModal } from './components/user-form-modal';
 import { useTranslation } from 'react-i18next';
-import { AccountStatus, Pagination, ResCode, Res, SysUser } from '../../../../api/types';
+import { AccountStatus, Pager, ResCode, Res, SysUser } from '../../../../api/types';
 import { API } from '../../../../api/constants';
 
 const UserManagementPage: React.FC = () => {
@@ -14,7 +14,7 @@ const UserManagementPage: React.FC = () => {
     const [pagination, setPagination] = useState({ page: 1, pageSize: 50 });
     const [query, setQuery] = useState('');
     const [inputStatus, setInputStatus] = useState<'' | 'warning' | 'error' | undefined>('');
-    const tableState = useAxios<Res<Pagination<SysUser>>>({
+    const tableState = useAxios<Res<Pager<SysUser>>>({
         url: API.USER_PAGE,
         data: { ...pagination, query },
         method: 'post',
@@ -181,6 +181,7 @@ const UserManagementPage: React.FC = () => {
                 <Flex gap='small' justify='space-between'>
                     <Flex gap='small' justify='start'>
                         <Input
+                            name='query'
                             onChange={(e) => {
                                 setInputStatus('');
                                 setQuery(e.target.value);

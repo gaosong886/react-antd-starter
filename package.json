@@ -1,6 +1,6 @@
 {
     "name": "react-antd-starter",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "",
     "author": "gaosong886",
     "license": "MIT",
@@ -13,11 +13,11 @@
         "preview": "vite preview"
     },
     "dependencies": {
-        "@ant-design/cssinjs": "^1.18.1",
-        "@ant-design/icons": "^5.2.6",
-        "@ant-design/pro-components": "^2.6.43",
-        "@ant-design/pro-form": "^2.23.1",
-        "@ant-design/pro-layout": "^7.17.16",
+        "@ant-design/cssinjs": "^1.18.4",
+        "@ant-design/icons": "^5.3.3",
+        "@ant-design/pro-components": "^2.6.50",
+        "@ant-design/pro-form": "^2.24.5",
+        "@ant-design/pro-layout": "^7.17.20",
         "@loadable/component": "^5.15.3",
         "@reduxjs/toolkit": "^2.0.1",
         "antd": "^5.12.1",

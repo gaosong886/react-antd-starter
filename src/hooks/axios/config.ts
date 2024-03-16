@@ -58,7 +58,6 @@ axiosInstance.interceptors.request.use((config) => {
                 requests = [];
             })
             .catch((err) => {
-                console.log(err);
                 isRefreshing = false;
                 requests.forEach((cb) => cb());
                 requests = [];

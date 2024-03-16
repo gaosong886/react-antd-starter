@@ -90,7 +90,7 @@ const MenuManagementPage: React.FC = () => {
             key: 'icon',
             width: 80,
             render: (value: string) => {
-                return <Icon key={value} component={(icons as any)[value]} style={{ marginRight: '8px' }} />;
+                if (value) return <Icon key={value} component={(icons as any)[value]} style={{ marginRight: '8px' }} />;
             },
         },
         {

@@ -21,7 +21,7 @@ const IconSelector = (props: IconSelectorProps) => {
     const { iconType, defaultValue, dropdownStyle, placement, iconStyle, setValue } = props;
 
     // 读取 Antd 的图标库
-    const iconList = useMemo(
+    const iconKeys = useMemo(
         () => Object.keys(icons).filter((item) => typeof (icons as any)[item] === 'object' && item !== 'default' && item.includes(iconType)),
         [iconType]
     );
@@ -39,14 +39,15 @@ const IconSelector = (props: IconSelectorProps) => {
         return (
             <Card style={{ width: 600, ...dropdownStyle }}>
                 <Flex wrap='wrap' gap='small'>
-                    {iconList.map((item) => {
+                    {iconKeys.map((key) => {
+                        const component = (icons as any)[key];
                         return (
                             <Icon
-                                key={item}
+                                key={key}
                                 onClick={() => {
-                                    onClick(item);
+                                    onClick(key);
                                 }}
-                                component={(icons as any)[item]}
+                                component={component}
                                 style={{ marginRight: '8px', ...iconStyle }}
                             />
                         );

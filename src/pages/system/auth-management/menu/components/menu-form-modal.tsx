@@ -29,6 +29,20 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
 
     const validationMsgs = useMemo(() => (saveRecordState.resp?.data as ValidError)?.errors || [], [saveRecordState.resp?.data]);
 
+    // 父节点的 id
+    const parentId = useMemo(() => {
+        // '新增' 的场合，使用从 props 中传过来的 parentId 作为初始值
+        if (props.parentId > 0)
+            return props.parentId;
+
+        // '编辑' 的场合，使用 record 里面的值
+        if (props.record?.parentId != 0)
+            return props.record?.parentId;
+
+        // 没有父节点的场合
+        return undefined;
+    }, [props.parentId, props.record?.parentId]);
+
     const onFinish = useCallback(
         async (value: object) => {
             const url = props.record ? `${API.MENU_UPDATE}/${props.record.id}` : API.MENU_CREATE;
@@ -47,7 +61,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
         const getRoute = (arr: any[]) => {
             const result: any[] = [];
             arr.forEach((item) => {
-                if (item.path === '' || item.path === '*') return;
+                if (!item.path || item.path === '*') return;
                 let children = undefined;
                 if (item.children) children = getRoute(item.children);
                 result.push({ label: item.path, value: item.path, children: children });
@@ -82,7 +96,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
                     permissionIds: props.record?.permissions?.map((item) => {
                         return item.id;
                     }),
-                    parentId: props.parentId > 0 ? props.parentId : props.record?.parentId != 0 ? props.record?.parentId : undefined,
+                    parentId: parentId,
                 }}
                 submitTimeout={1000}
                 open={props.visible}
@@ -91,13 +105,13 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
             >
                 <ProForm.Group>
                     <ProFormRadio.Group
-                        name='type'
                         label={t('form.common.type')}
                         style={{
                             margin: 16,
                         }}
                         radioType='button'
                         fieldProps={{
+                            name: 'type',
                             defaultValue: type,
                             onChange: (e) => setType(e.target.value),
                         }}
