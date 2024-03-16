@@ -8,15 +8,32 @@ import { useTranslation } from 'react-i18next';
 import { API } from '../../../../api/constants';
 import { ResCode, Res, SysRole } from '../../../../api/types';
 
+/**
+ * 角色管理
+ */
 const RoleManagementPage: React.FC = () => {
     const { t } = useTranslation();
 
-    const tableState = useAxios<Res<SysRole[]>>({ url: API.ROLE_LIST, method: 'get', manual: false });
-    const deleteState = useAxios<Res<undefined>>({});
+    // 表格数据请求状态对象
+    const tableReqState = useAxios<Res<SysRole[]>>({ url: API.ROLE_LIST, method: 'get', manual: false });
 
+    // '删除' 请求状态对象
+    const deleteReqState = useAxios<Res<undefined>>({});
+
+    // Modal 相关状态
     const [modalVisible, setModalVisible] = useState(false);
     const [modalData, setModalData] = useState<SysRole>();
+
+    // 点击 '删除'
+    const handleDelete = async (id: number) => {
+        const res = await deleteReqState.fetchAsync({
+            url: `${API.ROLE_DELETE}/${id}`,
+            method: 'post',
+        });
+        if (res?.code === ResCode.SUCCESS) tableReqState.fetch();
+    };
     
+    // 表格列
     const columns: ColumnsType<SysRole> = [
         {
             title: t("form.common.name"),
@@ -72,7 +89,7 @@ const RoleManagementPage: React.FC = () => {
                                     e?.stopPropagation();
                                     handleDelete(record.id);
                                 }}
-                                okButtonProps={{ loading: deleteState.loading }}
+                                okButtonProps={{ loading: deleteReqState.loading }}
                             >
                                 <Button
                                     onClick={(e) => {
@@ -89,14 +106,6 @@ const RoleManagementPage: React.FC = () => {
             },
         },
     ];
-
-    const handleDelete = async (id: number) => {
-        const res = await deleteState.fetchAsync({
-            url: `${API.ROLE_DELETE}/${id}`,
-            method: 'post',
-        });
-        if (res?.code === ResCode.SUCCESS) tableState.fetch();
-    };
 
     return (
         <>
@@ -116,17 +125,17 @@ const RoleManagementPage: React.FC = () => {
                     <Button
                         icon={<SyncOutlined />}
                         onClick={() => {
-                            tableState.fetch();
+                            tableReqState.fetch();
                         }}
                     >
                         {t("function.refresh")}
                     </Button>
                 </Flex>
-                <Spin spinning={tableState.loading}>
-                    <Table key='table' pagination={false} columns={columns} rowKey='id' dataSource={tableState.resp?.data || []} scroll={{ x: 900 }} />
+                <Spin spinning={tableReqState.loading}>
+                    <Table key='table' pagination={false} columns={columns} rowKey='id' dataSource={tableReqState.resp?.data || []} scroll={{ x: 900 }} />
                 </Spin>
             </Flex>
-            {<RoleFormModal key='modal' record={modalData} visible={modalVisible} onOpenChange={setModalVisible} onFinish={tableState.fetch} />}
+            {<RoleFormModal key='modal' record={modalData} visible={modalVisible} onOpenChange={setModalVisible} onFinish={tableReqState.fetch} />}
         </>
     );
 };

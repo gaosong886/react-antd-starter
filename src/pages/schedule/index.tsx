@@ -10,18 +10,31 @@ import { API } from '../../api/constants';
 const SchedulePage: React.FC = () => {
     const { t } = useTranslation();
 
-    const tableState = useAxios<Res<ScheduledTask[]>>({
+    // 表格数据请求状态对象
+    const tableReqState = useAxios<Res<ScheduledTask[]>>({
         url: API.SCHEDULE_LIST,
         method: 'get',
         manual: false,
     });
 
-    const switchState = useAxios<Res<undefined>>({
+    // '开始/暂停' 请求状态对象
+    const switchReqState = useAxios<Res<undefined>>({
         url: API.SCHEDULE_SWITCH,
         method: 'post',
         manual: true,
     });
 
+    // 点击 '开始/暂停' 按钮事件
+    const onSwitch = useCallback(
+        async (name: string) => {
+            // 同步发起请求，成功后刷新表格
+            const res = await switchReqState.fetchAsync({ data: { name } });
+            if (res?.code === ResCode.SUCCESS) tableReqState.fetch();
+        },
+        [switchReqState, tableReqState]
+    );
+
+    // 表格列
     const columns: ColumnsType<ScheduledTask> = [
         {
             title: t('form.common.name'),
@@ -105,14 +118,6 @@ const SchedulePage: React.FC = () => {
         },
     ];
 
-    const onSwitch = useCallback(
-        async (name: string) => {
-            const res = await switchState.fetchAsync({ data: { name } });
-            if (res?.code === ResCode.SUCCESS) tableState.fetch();
-        },
-        [switchState, tableState]
-    );
-
     return (
         <>
             <Flex gap='middle' vertical>
@@ -120,14 +125,14 @@ const SchedulePage: React.FC = () => {
                     <Button
                         icon={<SyncOutlined />}
                         onClick={() => {
-                            tableState.fetch();
+                            tableReqState.fetch();
                         }}
                     >
                         {t('function.refresh')}
                     </Button>
                 </Flex>
-                <Spin spinning={tableState.loading}>
-                    <Table rowKey='name' columns={columns} dataSource={tableState.resp?.data || []} scroll={{ x: 900 }} />
+                <Spin spinning={tableReqState.loading}>
+                    <Table rowKey='name' columns={columns} dataSource={tableReqState.resp?.data || []} scroll={{ x: 900 }} />
                 </Spin>
             </Flex>
         </>

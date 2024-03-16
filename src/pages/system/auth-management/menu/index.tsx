@@ -2,7 +2,7 @@ import { ColumnsType } from 'antd/es/table';
 import { Button, Flex, Popconfirm, Spin, Switch, Table, Tag } from 'antd/lib';
 import { useAxios } from '../../../../hooks/axios';
 import Icon, { NodeExpandOutlined, PlusOutlined, SyncOutlined } from '@ant-design/icons';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { MenuFormModal } from './components/menu-form-modal';
 import { useTranslation } from 'react-i18next';
 import { buildMenuTree } from '../../../../utils/menu-tree';
@@ -10,26 +10,59 @@ import { API } from '../../../../api/constants';
 import { ResCode, Res, SysMenuType, SysMenu } from '../../../../api/types';
 import * as icons from '@ant-design/icons';
 
+// 展开的 key 列表
 interface ExpandedRows {
     keys: number[];
 }
 
+/**
+ * 菜单管理
+ */
 const MenuManagementPage: React.FC = () => {
     const { t } = useTranslation();
 
-    const tableState = useAxios<Res<SysMenu[]>>({ url: API.MENU_LIST, method: 'get' });
-    const updateState = useAxios<Res<undefined>>({});
+    // 表格数据请求状态对象
+    const tableReqState = useAxios<Res<SysMenu[]>>({ url: API.MENU_LIST, method: 'get', manual: false });
 
+    // '隐藏'、'删除' 请求状态对象
+    const updateReqState = useAxios<Res<undefined>>({});
+
+    // Modal 相关状态
     const [modalData, setModalData] = useState<SysMenu>();
     const [modalVisible, setModalVisible] = useState(false);
 
+    // 用来传给 Modal 的父节点 id
     const [parentId, setParentId] = useState(0);
+
+    // 当前被展开的数据行
     const [expandedRows, setExpandedRows] = useState<ExpandedRows>();
 
+    // 把从服务器得到的菜单列表转化成树
     const menuTree = useMemo(() => {
-        if (tableState.resp?.data) return buildMenuTree(tableState.resp?.data);
-    }, [tableState.resp?.data]);
+        if (tableReqState.resp?.data) return buildMenuTree(tableReqState.resp?.data);
+    }, [tableReqState.resp?.data]);
 
+    // 表格中所有的 key
+    const allRowKeys = useMemo(() => {
+        if (!tableReqState.resp?.data) return [];
+        return tableReqState.resp.data.map((item) => item.id);
+    }, [tableReqState.resp?.data]);
+
+    // '展开' 事件
+    const expandAll = useCallback(() => {
+        setExpandedRows({ keys: allRowKeys });
+    }, [allRowKeys]);
+
+    // 点击 '删除'
+    const handleDelete = async (id: number) => {
+        const res = await updateReqState.fetchAsync({
+            url: `${API.MENU_DELETE}/${id}`,
+            method: 'post',
+        });
+        if (res?.code === ResCode.SUCCESS) tableReqState.fetch();
+    };
+
+    // 表格列
     const columns: ColumnsType<SysMenu> = [
         {
             title: t('form.common.name'),
@@ -69,13 +102,14 @@ const MenuManagementPage: React.FC = () => {
             key: 'hidden',
             width: 100,
             render: (value: unknown, record: SysMenu) => {
+                // 如果节点类型是 '操作'，不需要隐藏
                 if (record.type === SysMenuType.OPERATION) return;
                 return (
                     <Switch
                         defaultChecked={value === 1}
                         onChange={(_checked, event) => {
                             event.stopPropagation();
-                            updateState.fetch({
+                            updateReqState.fetch({
                                 url: `${API.MENU_HIDE}/${record.id}`,
                                 method: 'post',
                             });
@@ -160,7 +194,7 @@ const MenuManagementPage: React.FC = () => {
                                 e?.stopPropagation();
                                 handleDelete(record.id);
                             }}
-                            okButtonProps={{ loading: updateState.loading }}
+                            okButtonProps={{ loading: updateReqState.loading }}
                         >
                             <Button
                                 onClick={(e) => {
@@ -176,28 +210,6 @@ const MenuManagementPage: React.FC = () => {
             },
         },
     ];
-
-    const allRowKeys = useMemo(() => {
-        if (!tableState.resp?.data) return [];
-        return tableState.resp.data.map((item) => item.id);
-    }, [tableState.resp?.data]);
-
-    const expandAll = useCallback(() => {
-        setExpandedRows({ keys: allRowKeys });
-    }, [allRowKeys]);
-
-    const handleDelete = async (id: number) => {
-        const res = await updateState.fetchAsync({
-            url: `${API.MENU_DELETE}/${id}`,
-            method: 'post',
-        });
-        if (res?.code === ResCode.SUCCESS) tableState.fetch();
-    };
-
-    useEffect(() => {
-        tableState.fetch();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     return (
         <>
@@ -230,14 +242,14 @@ const MenuManagementPage: React.FC = () => {
                         <Button
                             icon={<SyncOutlined />}
                             onClick={() => {
-                                tableState.fetch();
+                                tableReqState.fetch();
                             }}
                         >
                             {t('function.refresh')}
                         </Button>
                     </Flex>
                 </Flex>
-                <Spin spinning={tableState.loading}>
+                <Spin spinning={tableReqState.loading}>
                     <Table
                         key='table'
                         columns={columns}
@@ -264,7 +276,7 @@ const MenuManagementPage: React.FC = () => {
                     menuTree={menuTree?.tree || []}
                     visible={modalVisible}
                     onOpenChange={setModalVisible}
-                    onFinish={tableState.fetch}
+                    onFinish={tableReqState.fetch}
                 />
             }
         </>

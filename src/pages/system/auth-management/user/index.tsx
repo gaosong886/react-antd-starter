@@ -8,23 +8,68 @@ import { useTranslation } from 'react-i18next';
 import { AccountStatus, Pager, ResCode, Res, SysUser } from '../../../../api/types';
 import { API } from '../../../../api/constants';
 
+/**
+ * 用户管理
+ */
 const UserManagementPage: React.FC = () => {
     const { t } = useTranslation();
 
+    // 分页状态对象
     const [pagination, setPagination] = useState({ page: 1, pageSize: 50 });
+
+    // 搜索关键词
     const [query, setQuery] = useState('');
+
+    // 搜索输入框状态
     const [inputStatus, setInputStatus] = useState<'' | 'warning' | 'error' | undefined>('');
-    const tableState = useAxios<Res<Pager<SysUser>>>({
+
+    // Modal 相关状态
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalData, setModalData] = useState<SysUser>();
+
+    // 表格数据请求状态对象
+    const tableReqState = useAxios<Res<Pager<SysUser>>>({
         url: API.USER_PAGE,
         data: { ...pagination, query },
         method: 'post',
         manual: true,
     });
+
+    // '删除' 请求状态对象
     const deleteState = useAxios<Res<undefined>>({});
 
-    const [modalVisible, setModalVisible] = useState(false);
-    const [modalData, setModalData] = useState<SysUser>();
+    // 点击 '删除'
+    const handleDelete = async (id: number) => {
+        const res = await deleteState.fetchAsync({
+            url: `${API.USER_DELETE}/${id}`,
+            method: 'post',
+        });
+        // 刷新表格
+        if (res?.code === ResCode.SUCCESS) tableReqState.fetch();
+    };
 
+    // 分页变化事件
+    const onPaginationChange = useCallback((page: number, pageSize: number) => {
+        setPagination({ page, pageSize });
+    }, []);
+
+    // 点击 '搜索'
+    const onSearch = useCallback(() => {
+        if (!query) {
+            // 输入为空的时候把输入框状态设为 error
+            setInputStatus('error');
+            return;
+        }
+        tableReqState.fetch({ data: { ...pagination, query } });
+    }, [pagination, query, tableReqState]);
+
+    // 分页变化时，重新获取表格数据
+    useEffect(() => {
+        tableReqState.fetch({ data: { ...pagination, query } });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pagination]);
+
+    // 表格列
     const columns: ColumnsType<SysUser> = [
         {
             title: t('form.user.photo'),
@@ -150,31 +195,6 @@ const UserManagementPage: React.FC = () => {
         },
     ];
 
-    const handleDelete = async (id: number) => {
-        const res = await deleteState.fetchAsync({
-            url: `${API.USER_DELETE}/${id}`,
-            method: 'post',
-        });
-        if (res?.code === ResCode.SUCCESS) tableState.fetch();
-    };
-
-    const onPaginationChange = useCallback((page: number, pageSize: number) => {
-        setPagination({ page, pageSize });
-    }, []);
-
-    const onSearch = useCallback(() => {
-        if (!query) {
-            setInputStatus('error');
-            return;
-        }
-        tableState.fetch({ data: { ...pagination, query } });
-    }, [pagination, query, tableState]);
-
-    useEffect(() => {
-        tableState.fetch({ data: { ...pagination, query } });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pagination]);
-
     return (
         <>
             <Flex gap='middle' vertical>
@@ -195,7 +215,7 @@ const UserManagementPage: React.FC = () => {
                             onClick={() => {
                                 if (query) {
                                     setQuery('');
-                                    tableState.fetch({ data: pagination });
+                                    tableReqState.fetch({ data: pagination });
                                 }
                             }}
                         >
@@ -219,14 +239,14 @@ const UserManagementPage: React.FC = () => {
                         <Button
                             icon={<SyncOutlined />}
                             onClick={() => {
-                                tableState.fetch();
+                                tableReqState.fetch();
                             }}
                         >
                             {t('function.refresh')}
                         </Button>
                     </Flex>
                 </Flex>
-                <Spin spinning={tableState.loading}>
+                <Spin spinning={tableReqState.loading}>
                     <Table
                         rowKey='id'
                         columns={columns}
@@ -235,17 +255,17 @@ const UserManagementPage: React.FC = () => {
                             pageSize: pagination.pageSize,
                             defaultCurrent: 1,
                             defaultPageSize: 50,
-                            total: tableState.resp?.data?.totalItems,
+                            total: tableReqState.resp?.data?.totalItems,
                             onChange: onPaginationChange,
                             showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
                             pageSizeOptions: [20, 50, 100],
                         }}
-                        dataSource={tableState.resp?.data?.data || []}
+                        dataSource={tableReqState.resp?.data?.data || []}
                         scroll={{ x: 900 }}
                     />
                 </Spin>
             </Flex>
-            {<UserFormModal record={modalData} visible={modalVisible} onOpenChange={setModalVisible} onFinish={tableState.fetch} />}
+            {<UserFormModal record={modalData} visible={modalVisible} onOpenChange={setModalVisible} onFinish={tableReqState.fetch} />}
         </>
     );
 };

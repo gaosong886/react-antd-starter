@@ -12,20 +12,23 @@ const LoginPage: React.FC = () => {
     const navigate = useNavigate();
     const { t } = useTranslation();
 
-    const loginState = useAxios<Res<JwtToken | ValidError>>({ url: API.AUTH_LOGIN, method: 'post' });
-    const validationMsgs = useMemo(() => (loginState.resp?.data as ValidError)?.errors || [], [loginState.resp?.data]);
+    // 登录请求状态对象
+    const loginReqState = useAxios<Res<JwtToken | ValidError>>({ url: API.AUTH_LOGIN, method: 'post' });
+
+    // 服务端回传的表单校验错误信息
+    const validErrors = useMemo(() => (loginReqState.resp?.data as ValidError)?.errors || [], [loginReqState.resp?.data]);
 
     const handleSubmit = useCallback(
         (formData: Record<string, unknown>) => {
-            loginState.fetch({ data: formData });
+            loginReqState.fetch({ data: formData });
         },
-        [loginState]
+        [loginReqState]
     );
 
     useEffect(() => {
         // 登录成功，跳转到控制台
-        if (loginState.resp?.code == ResCode.SUCCESS) navigate('/dashboard');
-    }, [loginState.resp?.code, navigate]);
+        if (loginReqState.resp?.code == ResCode.SUCCESS) navigate('/dashboard');
+    }, [loginReqState.resp?.code, navigate]);
 
     return (
         <div
@@ -46,7 +49,7 @@ const LoginPage: React.FC = () => {
                     backgroundColor: '#f0f2f5',
                 }}
             >
-                <Spin spinning={loginState.loading}>
+                <Spin spinning={loginReqState.loading}>
                     <ProFormText
                         name='username'
                         fieldProps={{
@@ -78,8 +81,8 @@ const LoginPage: React.FC = () => {
                         ]}
                     />
                 </Spin>
-                {validationMsgs &&
-                    validationMsgs.map((msg) => (
+                {validErrors &&
+                    validErrors.map((msg) => (
                         <Alert
                             style={{
                                 marginBottom: 24,

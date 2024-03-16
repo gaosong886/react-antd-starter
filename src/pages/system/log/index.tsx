@@ -7,22 +7,60 @@ import { useTranslation } from 'react-i18next';
 import { Pager, ResCode, Res, SysLog } from '../../../api/types';
 import { API } from '../../../api/constants';
 
+/**
+ * 系统日志
+ */
 const UserManagementPage: React.FC = () => {
     const { t } = useTranslation();
 
+    // 分页状态对象
     const [pagination, setPagination] = useState({ page: 1, pageSize: 50 });
+
+    // 搜索关键词对象
     const [query, setQuery] = useState('');
+
+    // 搜索输入框状态
     const [inputStatus, setInputStatus] = useState<'' | 'warning' | 'error' | undefined>('');
 
-    const tableState = useAxios<Res<Pager<SysLog>>>({
+    // 表格数据请求状态对象
+    const tableReqState = useAxios<Res<Pager<SysLog>>>({
         url: API.LOG_PAGE,
         data: { ...pagination, query },
         method: 'post',
         manual: true,
     });
 
+    // '清空' 请求状态对象
     const truncateState = useAxios<Res<undefined>>({ url: API.LOG_TRUNCATE, method: 'post', manual: true });
 
+    // 分页变化事件
+    const onPaginationChange = useCallback((page: number, pageSize: number) => {
+        setPagination({ page, pageSize });
+    }, []);
+
+    // 点击 '搜索'
+    const onSearch = useCallback(() => {
+        if (!query) {
+            // 输入为空的时候把输入框状态设为 error
+            setInputStatus('error');
+            return;
+        }
+        tableReqState.fetch({ data: { ...pagination, query } });
+    }, [pagination, query, tableReqState]);
+
+    // 点击 '清空'
+    const onTruncate = useCallback(async () => {
+        const res = await truncateState.fetchAsync();
+        if (res?.code === ResCode.SUCCESS) tableReqState.fetch();
+    }, [tableReqState, truncateState]);
+
+    // 分页变化时，重新获取表格数据
+    useEffect(() => {
+        tableReqState.fetch({ data: { ...pagination, query } });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pagination]);
+
+    // 表格列
     const columns: ColumnsType<SysLog> = [
         {
             title: t('form.user.userId'),
@@ -69,28 +107,6 @@ const UserManagementPage: React.FC = () => {
         },
     ];
 
-    const onPaginationChange = useCallback((page: number, pageSize: number) => {
-        setPagination({ page, pageSize });
-    }, []);
-
-    const onSearch = useCallback(() => {
-        if (!query) {
-            setInputStatus('error');
-            return;
-        }
-        tableState.fetch({ data: { ...pagination, query } });
-    }, [pagination, query, tableState]);
-
-    const onDelete = useCallback(async () => {
-        const res = await truncateState.fetchAsync();
-        if (res?.code === ResCode.SUCCESS) tableState.fetch();
-    }, [tableState, truncateState]);
-
-    useEffect(() => {
-        tableState.fetch({ data: { ...pagination, query } });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pagination]);
-
     return (
         <>
             <Flex gap='middle' vertical>
@@ -111,7 +127,7 @@ const UserManagementPage: React.FC = () => {
                             onClick={() => {
                                 if (query) {
                                     setQuery('');
-                                    tableState.fetch({ data: pagination });
+                                    tableReqState.fetch({ data: pagination });
                                 }
                             }}
                         >
@@ -132,7 +148,7 @@ const UserManagementPage: React.FC = () => {
                             }}
                             onConfirm={(e) => {
                                 e?.stopPropagation();
-                                onDelete();
+                                onTruncate();
                             }}
                             okButtonProps={{ loading: truncateState.loading }}
                         >
@@ -149,14 +165,14 @@ const UserManagementPage: React.FC = () => {
                         <Button
                             icon={<SyncOutlined />}
                             onClick={() => {
-                                tableState.fetch();
+                                tableReqState.fetch();
                             }}
                         >
                             {t('function.refresh')}
                         </Button>
                     </Flex>
                 </Flex>
-                <Spin spinning={tableState.loading}>
+                <Spin spinning={tableReqState.loading}>
                     <Table
                         rowKey='id'
                         columns={columns}
@@ -165,12 +181,12 @@ const UserManagementPage: React.FC = () => {
                             pageSize: pagination.pageSize,
                             defaultCurrent: 1,
                             defaultPageSize: 50,
-                            total: tableState.resp?.data?.totalItems,
+                            total: tableReqState.resp?.data?.totalItems,
                             onChange: onPaginationChange,
                             showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
                             pageSizeOptions: [20, 50, 100],
                         }}
-                        dataSource={tableState.resp?.data?.data || []}
+                        dataSource={tableReqState.resp?.data?.data || []}
                         scroll={{ x: 900 }}
                     />
                 </Spin>

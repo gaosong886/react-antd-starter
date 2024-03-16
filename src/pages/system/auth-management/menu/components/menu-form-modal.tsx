@@ -21,13 +21,20 @@ export interface MenuFormModalProps {
 export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModalProps) => {
     const { t } = useTranslation();
 
+    // 当前记录的节点类型
     const [type, setType] = useState(props.record?.type || SysMenuType.DIRECTORY);
+
+    // 当前选中的图标
     const [icon, setIcon] = useState(props.record?.icon);
 
-    const permState = useAxios<Res<SysPermission[]>>({ url: API.PERMISSION_LIST, method: 'get' });
-    const saveRecordState = useAxios<Res<SysMenu>>({});
+    // 权限列表请求状态对象
+    const permissionReqState = useAxios<Res<SysPermission[]>>({ url: API.PERMISSION_LIST, method: 'get' });
 
-    const validationMsgs = useMemo(() => (saveRecordState.resp?.data as ValidError)?.errors || [], [saveRecordState.resp?.data]);
+    // '保存' 请求状态对象
+    const saveReqState = useAxios<Res<SysMenu>>({});
+
+    // 后端返回的校验错误信息
+    const validErrors = useMemo(() => (saveReqState.resp?.data as ValidError)?.errors || [], [saveReqState.resp?.data]);
 
     // 父节点的 id
     const parentId = useMemo(() => {
@@ -43,25 +50,32 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
         return undefined;
     }, [props.parentId, props.record?.parentId]);
 
+    // 保存
     const onFinish = useCallback(
         async (value: object) => {
             const url = props.record ? `${API.MENU_UPDATE}/${props.record.id}` : API.MENU_CREATE;
-            const res = await saveRecordState.fetchAsync({ url: url, method: 'post', data: { ...value, type, icon } });
+            const res = await saveReqState.fetchAsync({ url: url, method: 'post', data: { ...value, type, icon } });
+            // 保存成功时关闭 Modal
             if (res?.code === ResCode.SUCCESS) {
                 props.onFinish();
                 return true;
             }
             return false;
         },
-        [icon, saveRecordState, props, type]
+        [icon, saveReqState, props, type]
     );
 
+    // 根据项目路由拼装 TreeSelect 控件的数据
     const routesWithAbsolutePath = useMemo(() => {
         if (!appRoutes) return [];
+
+        // 递归生成路由树
         const getRoute = (arr: any[]) => {
             const result: any[] = [];
             arr.forEach((item) => {
+                // 跳过空路径和通配符
                 if (!item.path || item.path === '*') return;
+
                 let children = undefined;
                 if (item.children) children = getRoute(item.children);
                 result.push({ label: item.path, value: item.path, children: children });
@@ -71,15 +85,16 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
         return getRoute(appRoutes);
     }, []);
 
+    // 初始化 Modal
     useEffect(
         () => {
             if (props.visible) {
-                permState.fetch();
+                permissionReqState.fetch();
                 setIcon(props.record?.icon);
                 setType(props.record?.type || SysMenuType.DIRECTORY);
             } else {
-                saveRecordState.reset();
-                permState.reset();
+                saveReqState.reset();
+                permissionReqState.reset();
             }
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -87,7 +102,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
     );
 
     return (
-        <Spin spinning={permState.loading || saveRecordState.loading}>
+        <Spin spinning={permissionReqState.loading || saveReqState.loading}>
             <ModalForm
                 modalProps={{ destroyOnClose: true, getContainer: false }}
                 initialValues={{
@@ -197,17 +212,17 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
                             fieldProps={{
                                 mode: 'multiple',
                                 placeholder: t('hint.pleaseSelect'),
-                                loading: permState.loading,
+                                loading: permissionReqState.loading,
                             }}
-                            options={permState.resp?.data?.map((item) => {
+                            options={permissionReqState.resp?.data?.map((item) => {
                                 return { label: item.name, value: item.id };
                             })}
                             required
                         />
                     )}
                 </ProForm.Group>
-                {validationMsgs &&
-                    validationMsgs.map((msg) => (
+                {validErrors &&
+                    validErrors.map((msg) => (
                         <Alert
                             style={{
                                 marginBottom: 24,

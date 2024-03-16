@@ -15,21 +15,34 @@ export interface UserFormModalProps {
     onFinish: () => void;
 }
 
+/**
+ * 用户管理弹窗
+ */
 export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModalProps) => {
     const { t } = useTranslation();
 
-    const roleState = useAxios<Res<SysRole[]>>({ url: API.ROLE_LIST, method: 'get', manual: false });
-    const photoState = useAxios<Res<UploadFile>>({ url: API.USER_PHOTO, method: 'post' });
-    const saveRecordState = useAxios<Res<SysUser>>({});
+    // 获取角色列表请求状态对象
+    const roleReqState = useAxios<Res<SysRole[]>>({ url: API.ROLE_LIST, method: 'get', manual: false });
 
+    // 上传照片请求状态对象
+    const photoReqState = useAxios<Res<UploadFile>>({ url: API.USER_PHOTO, method: 'post' });
+
+    // '保存' 请求状态对象
+    const saveReqRecordState = useAxios<Res<SysUser>>({});
+
+    // 上传照片相关状态
     const [photoUrl, setPhotoUrl] = useState<string>(props.record?.photo || '');
     const [uploadError, setUploadError] = useState('');
 
-    const validationMsgs = useMemo(() => (saveRecordState.resp?.data as ValidError)?.errors || [], [saveRecordState.resp?.data]);
+    // 上传文件列表，给 Upload 控件初始化用
     const uploadedFileList = useMemo((): UploadFile<any>[] => {
         return photoUrl ? [{ status: 'done', uid: 'photo', name: 'photo', url: photoUrl }] : [];
     }, [photoUrl]);
 
+    // 服务端回传的表单校验错误信息
+    const validErrors = useMemo(() => (saveReqRecordState.resp?.data as ValidError)?.errors || [], [saveReqRecordState.resp?.data]);
+
+    // Upload 控件的自定义上传请求
     const uploadRequest = useCallback(
         async (options: any) => {
             const { file } = options;
@@ -37,7 +50,7 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
             const formData = new FormData();
             formData.append('file', file);
 
-            photoState.fetch({
+            photoReqState.fetch({
                 data: formData,
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -45,26 +58,30 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
             });
             setUploadError('');
         },
-        [photoState]
+        [photoReqState]
     );
 
+    // 保存
     const onFinish = useCallback(
         async (value: any) => {
             const url = props.record ? `${API.USER_UPDATE}/${props.record.id}` : API.USER_CREATE;
-            const res = await saveRecordState.fetchAsync({
+            const res = await saveReqRecordState.fetchAsync({
                 url: url,
                 method: 'post',
                 data: { ...value, photo: photoUrl, accountStatus: value.accountStatus ? -1 : 0 },
             });
+
+            // 成功后关闭 Modal
             if (res?.code === ResCode.SUCCESS) {
                 props.onFinish();
                 return true;
             }
             return false;
         },
-        [photoUrl, props, saveRecordState]
+        [photoUrl, props, saveReqRecordState]
     );
 
+    // 照片上传前进行本地检查
     const beforeUpload = (file: RcFile) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
@@ -77,19 +94,21 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
         return isJpgOrPng && isLt2M;
     };
 
+    // 数据初始化
     useEffect(() => {
-        saveRecordState.reset();
+        saveReqRecordState.reset();
         setUploadError('');
         setPhotoUrl(props.record?.photo || '');
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props]);
 
+    // 头像地址永远用最新上传的那个
     useEffect(() => {
-        if (photoState.resp?.data?.url) setPhotoUrl(photoState.resp?.data?.url);
-    }, [photoState.resp?.data?.url]);
+        if (photoReqState.resp?.data?.url) setPhotoUrl(photoReqState.resp?.data?.url);
+    }, [photoReqState.resp?.data?.url]);
 
     return (
-        <Spin spinning={roleState.loading || saveRecordState.loading || photoState.loading}>
+        <Spin spinning={roleReqState.loading || saveReqRecordState.loading || photoReqState.loading}>
             <ModalForm
                 modalProps={{ destroyOnClose: true, getContainer: false }}
                 initialValues={{
@@ -166,9 +185,9 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
                         fieldProps={{
                             mode: 'multiple',
                             placeholder: t('hint.pleaseSelect'),
-                            loading: roleState.loading,
+                            loading: roleReqState.loading,
                         }}
-                        options={roleState.resp?.data?.map((item) => {
+                        options={roleReqState.resp?.data?.map((item) => {
                             return { label: item.name, value: item.id };
                         })}
                         required
@@ -179,8 +198,8 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
                         <ProFormSwitch name='accountStatus' label={t('status.banned')} />
                     </ProForm.Group>
                 )}
-                {validationMsgs &&
-                    validationMsgs.map((msg) => (
+                {validErrors &&
+                    validErrors.map((msg) => (
                         <Alert
                             style={{
                                 marginBottom: 24,

@@ -15,40 +15,30 @@ export interface RoleFormModalProps {
     onFinish: () => void;
 }
 
+/**
+ * 角色管理弹窗
+ */
 export const RoleFormModal: React.FC<RoleFormModalProps> = (props: RoleFormModalProps) => {
     const { t } = useTranslation();
 
-    const menuState = useAxios<Res<SysMenu[]>>({ url: API.MENU_LIST, method: 'get', manual: false });
-    const saveRecordState = useAxios<Res<SysRole>>({});
+    // 菜单请求状态对象
+    const menuReqState = useAxios<Res<SysMenu[]>>({ url: API.MENU_LIST, method: 'get', manual: false });
 
+    // '保存' 请求状态对象
+    const saveReqState = useAxios<Res<SysRole>>({});
+
+    // 选中的菜单
     const [checkedKeys, setCheckedKeys] = useState(props.record?.menus.map((item) => item.id) || []);
-    const validationMsgs = useMemo(() => (saveRecordState.resp?.data as ValidError)?.errors || [], [saveRecordState.resp?.data]);
 
+    // 服务端回传的表单校验错误信息
+    const validErrors = useMemo(() => (saveReqState.resp?.data as ValidError)?.errors || [], [saveReqState.resp?.data]);
+
+    // 把从服务器得到的菜单列表转化成树
     const menuTree = useMemo(() => {
-        if (menuState.resp?.data) {
-            return buildMenuTree(menuState.resp?.data, new Set(checkedKeys));
-        }
-    }, [menuState.resp?.data, checkedKeys]);
+        if (menuReqState.resp?.data) return buildMenuTree(menuReqState.resp?.data, new Set(checkedKeys));
+    }, [menuReqState.resp?.data, checkedKeys]);
 
-    const onFinish = useCallback(
-        async (value: object) => {
-            const url = props.record ? `${API.ROLE_UPDATE}/${props.record.id}` : API.ROLE_CREATE;
-            const res = await saveRecordState.fetchAsync({ url: url, method: 'post', data: { ...value, menuIds: checkedKeys } });
-            if (res?.code === ResCode.SUCCESS) {
-                props.onFinish();
-                return true;
-            }
-            return false;
-        },
-        [checkedKeys, props, saveRecordState]
-    );
-
-    useEffect(() => {
-        saveRecordState.reset();
-        setCheckedKeys(props.record?.menus.map((item) => item.id) || []);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props]);
-
+    // 树形选择器选中事件
     const onCheck: TreeProps['onCheck'] = (checkedKeys, e) => {
         if (Array.isArray(checkedKeys)) {
             const halfChecked = e.halfCheckedKeys ? e.halfCheckedKeys : [];
@@ -58,8 +48,29 @@ export const RoleFormModal: React.FC<RoleFormModalProps> = (props: RoleFormModal
         }
     };
 
+    // 保存事件
+    const onFinish = useCallback(
+        async (value: object) => {
+            const url = props.record ? `${API.ROLE_UPDATE}/${props.record.id}` : API.ROLE_CREATE;
+            const res = await saveReqState.fetchAsync({ url: url, method: 'post', data: { ...value, menuIds: checkedKeys } });
+            if (res?.code === ResCode.SUCCESS) {
+                props.onFinish();
+                return true;
+            }
+            return false;
+        },
+        [checkedKeys, props, saveReqState]
+    );
+
+    // 初始化 Modal 数据
+    useEffect(() => {
+        saveReqState.reset();
+        setCheckedKeys(props.record?.menus.map((item) => item.id) || []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props]);
+
     return (
-        <Spin spinning={menuState.loading || saveRecordState.loading}>
+        <Spin spinning={menuReqState.loading || saveReqState.loading}>
             <ModalForm
                 modalProps={{ destroyOnClose: true, getContainer: false }}
                 initialValues={{
@@ -106,8 +117,8 @@ export const RoleFormModal: React.FC<RoleFormModalProps> = (props: RoleFormModal
                         </Card>
                     </ProForm.Item>
                 </ProForm.Group>
-                {validationMsgs &&
-                    validationMsgs.map((msg) => (
+                {validErrors &&
+                    validErrors.map((msg) => (
                         <Alert
                             style={{
                                 marginBottom: 24,
