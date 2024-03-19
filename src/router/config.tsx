@@ -72,8 +72,7 @@ const appRoutes: RouteObject[] = [
     },
     {
         element: <BaseLayout />,
-        // 自动构建页面路由
-        children: buildRoutes(pages),
+        children: buildRoutes(pages), // 自动构建页面路由
     },
     {
         path: '/login',

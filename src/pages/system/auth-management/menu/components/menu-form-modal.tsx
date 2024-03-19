@@ -39,12 +39,10 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
     // 父节点的 id
     const parentId = useMemo(() => {
         // '新增' 的场合，使用从 props 中传过来的 parentId 作为初始值
-        if (props.parentId > 0)
-            return props.parentId;
+        if (props.parentId > 0) return props.parentId;
 
         // '编辑' 的场合，使用 record 里面的值
-        if (props.record?.parentId != 0)
-            return props.record?.parentId;
+        if (props.record?.parentId != 0) return props.record?.parentId;
 
         // 没有父节点的场合
         return undefined;
@@ -73,12 +71,14 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
         const getRoute = (arr: any[]) => {
             const result: any[] = [];
             arr.forEach((item) => {
-                // 跳过空路径和通配符
-                if (!item.path || item.path === '*') return;
+                // 跳过特殊路径
+                if (item.path === '/' || item.path === '*') return;
+
+                const path = item.path ? item.path : '/';
 
                 let children = undefined;
                 if (item.children) children = getRoute(item.children);
-                result.push({ label: item.path, value: item.path, children: children });
+                result.push({ label: path, value: path, children: children });
             });
             return result;
         };
