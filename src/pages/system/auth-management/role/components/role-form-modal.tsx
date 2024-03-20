@@ -112,7 +112,7 @@ export const RoleFormModal: React.FC<RoleFormModalProps> = (props: RoleFormModal
                                 defaultCheckedKeys={menuTree?.checked || []}
                                 onCheck={onCheck}
                                 fieldNames={{ title: 'name', key: 'id', children: 'children' }}
-                                treeData={menuTree?.tree as unknown as DataNode[]}
+                                treeData={menuTree?.tree as unknown as DataNode[] || []}
                                 disabled={props.record?.id == 1 ? true : false}
                             />
                         </Card>

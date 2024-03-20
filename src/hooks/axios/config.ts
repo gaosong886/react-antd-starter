@@ -12,7 +12,7 @@ let isRefreshing = false;
 let requests: ((data?: JwtToken) => void)[] = [];
 
 // 初始化 axios 实例
-const axiosInstance = axios.create({ baseURL: import.meta.env.VITE_BASE_API_URL, timeout: 3000 });
+const axiosInstance = axios.create({ baseURL: import.meta.env.VITE_BASE_API_URL, timeout: 5000 });
 
 /**
  * 注册 request 拦截器，将自动为接口请求加入 Authorization 头
