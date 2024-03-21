@@ -32,35 +32,35 @@ const RoleManagementPage: React.FC = () => {
         });
         if (res?.code === ResCode.SUCCESS) tableReqState.fetch();
     };
-    
+
     // 表格列
     const columns: ColumnsType<SysRole> = [
         {
-            title: t("form.common.name"),
+            title: t('form.common.name'),
             dataIndex: 'name',
             key: 'name',
             width: 220,
         },
         {
-            title: t("form.common.description"),
+            title: t('form.common.description'),
             dataIndex: 'description',
             key: 'description',
             ellipsis: true,
         },
         {
-            title: t("form.common.createAt"),
+            title: t('form.common.createAt'),
             dataIndex: 'createAt',
             key: 'createAt',
             width: 220,
         },
         {
-            title: t("form.common.updateAt"),
+            title: t('form.common.updateAt'),
             dataIndex: 'updateAt',
             key: 'updateAt',
             width: 220,
         },
         {
-            title: t("form.common.operation"),
+            title: t('form.common.operation'),
             dataIndex: '',
             key: 'x',
             width: 170,
@@ -74,14 +74,14 @@ const RoleManagementPage: React.FC = () => {
                                 setModalVisible(true);
                             }}
                         >
-                            {t("function.edit")}
+                            {t('function.edit')}
                         </Button>
                         {record.id != 1 && (
                             <Popconfirm
-                                title={t("hint.deleteWarning")}
-                                description={t("hint.deleteWarningDetail")}
-                                okText={t("function.confirm")}
-                                cancelText={t("function.cancel")}
+                                title={t('hint.deleteWarning')}
+                                description={t('hint.deleteWarningDetail')}
+                                okText={t('function.confirm')}
+                                cancelText={t('function.cancel')}
                                 onCancel={(e) => {
                                     e?.stopPropagation();
                                 }}
@@ -97,7 +97,7 @@ const RoleManagementPage: React.FC = () => {
                                     }}
                                     danger
                                 >
-                                    {t("function.delete")}
+                                    {t('function.delete')}
                                 </Button>
                             </Popconfirm>
                         )}
@@ -120,7 +120,7 @@ const RoleManagementPage: React.FC = () => {
                         }}
                         type='primary'
                     >
-                        {t("function.new")}
+                        {t('function.new')}
                     </Button>
                     <Button
                         icon={<SyncOutlined />}
@@ -128,7 +128,7 @@ const RoleManagementPage: React.FC = () => {
                             tableReqState.fetch();
                         }}
                     >
-                        {t("function.refresh")}
+                        {t('function.refresh')}
                     </Button>
                 </Flex>
                 <Spin spinning={tableReqState.loading}>
