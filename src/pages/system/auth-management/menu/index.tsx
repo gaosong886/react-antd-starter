@@ -55,7 +55,7 @@ const MenuManagementPage: React.FC = () => {
 
     // 点击 '删除'
     const handleDelete = async (id: number) => {
-        const res = await updateReqState.fetchAsync({
+        const res = await updateReqState.fetch({
             url: `${API.MENU_DELETE}/${id}`,
             method: 'post',
         });

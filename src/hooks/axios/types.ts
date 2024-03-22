@@ -16,10 +16,8 @@ export interface UseAxiosState<T> {
     resp?: T;
     // 异常对象
     err?: Error;
-    // 请求方法（用来手动发起请求）
-    fetch: (config?: AxiosRequestConfig) => void;
-    // 同步请求方法
-    fetchAsync: (config?: AxiosRequestConfig) => Promise<T>;
+    // 请求方法
+    fetch: (config?: AxiosRequestConfig) => Promise<T>;
     // 重置请求
     reset: () => void;
 }

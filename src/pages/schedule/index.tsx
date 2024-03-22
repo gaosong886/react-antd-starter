@@ -28,7 +28,7 @@ const SchedulePage: React.FC = () => {
     const onSwitch = useCallback(
         async (name: string) => {
             // 同步发起请求，成功后刷新表格
-            const res = await switchReqState.fetchAsync({ data: { name } });
+            const res = await switchReqState.fetch({ data: { name } });
             if (res?.code === ResCode.SUCCESS) tableReqState.fetch();
         },
         [switchReqState, tableReqState]

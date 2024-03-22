@@ -53,7 +53,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
         async (value: any) => {
             const url = props.record ? `${API.MENU_UPDATE}/${props.record.id}` : API.MENU_CREATE;
             const hidden = value.hidden ? 1 : 0;
-            const res = await saveReqState.fetchAsync({ url: url, method: 'post', data: { ...value, type, icon, hidden } });
+            const res = await saveReqState.fetch({ url: url, method: 'post', data: { ...value, type, icon, hidden } });
             // 保存成功时关闭 Modal
             if (res?.code === ResCode.SUCCESS) {
                 props.onFinish();

@@ -33,39 +33,6 @@ export function useAxios<T>({ manual = true, cancelPrev = true, ...axiosRequestC
     const abortController = useRef<AbortController>();
 
     const fetch = useCallback(
-        (config?: AxiosRequestConfig) => {
-            dispatch({
-                type: ActionType.REQUEST_START,
-            });
-
-            if (cancelPrev && abortController.current) {
-                abortController.current.abort();
-            }
-            abortController.current = new AbortController();
-
-            axiosInstance
-                .request<AxiosRequestConfig>({
-                    ...axiosRequestConfig,
-                    ...config,
-                    signal: abortController.current.signal,
-                })
-                .then((res) => {
-                    dispatch({
-                        type: ActionType.REQUEST_SUCCESS,
-                        payload: { resp: res.data as T },
-                    });
-                })
-                .catch((error) => {
-                    dispatch({
-                        type: ActionType.REQUEST_ERROR,
-                        payload: { err: error, resp: error.response?.data },
-                    });
-                });
-        },
-        [axiosRequestConfig, cancelPrev]
-    );
-
-    const fetchAsync = useCallback(
         async (config?: AxiosRequestConfig) => {
             dispatch({
                 type: ActionType.REQUEST_START,
@@ -110,5 +77,5 @@ export function useAxios<T>({ manual = true, cancelPrev = true, ...axiosRequestC
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return { ...state, fetch, fetchAsync, reset };
+    return { ...state, fetch, fetchAsync: fetch, reset };
 }

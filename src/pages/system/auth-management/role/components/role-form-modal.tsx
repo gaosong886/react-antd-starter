@@ -52,7 +52,7 @@ export const RoleFormModal: React.FC<RoleFormModalProps> = (props: RoleFormModal
     const onFinish = useCallback(
         async (value: object) => {
             const url = props.record ? `${API.ROLE_UPDATE}/${props.record.id}` : API.ROLE_CREATE;
-            const res = await saveReqState.fetchAsync({ url: url, method: 'post', data: { ...value, menuIds: checkedKeys } });
+            const res = await saveReqState.fetch({ url: url, method: 'post', data: { ...value, menuIds: checkedKeys } });
             if (res?.code === ResCode.SUCCESS) {
                 props.onFinish();
                 return true;

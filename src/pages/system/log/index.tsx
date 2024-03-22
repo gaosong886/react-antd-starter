@@ -50,7 +50,7 @@ const UserManagementPage: React.FC = () => {
 
     // 点击 '清空'
     const onTruncate = useCallback(async () => {
-        const res = await truncateState.fetchAsync();
+        const res = await truncateState.fetch();
         if (res?.code === ResCode.SUCCESS) tableReqState.fetch();
     }, [tableReqState, truncateState]);
 
