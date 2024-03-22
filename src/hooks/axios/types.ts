@@ -18,7 +18,7 @@ export interface UseAxiosState<T> {
     err?: Error;
     // 请求方法
     fetch: (config?: AxiosRequestConfig) => Promise<T>;
-    // 重置请求
+    // 重置数据
     reset: () => void;
 }
 

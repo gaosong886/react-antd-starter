@@ -77,5 +77,5 @@ export function useAxios<T>({ manual = true, cancelPrev = true, ...axiosRequestC
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return { ...state, fetch, fetchAsync: fetch, reset };
+    return { ...state, fetch, reset };
 }
