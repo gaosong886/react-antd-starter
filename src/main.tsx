@@ -1,5 +1,4 @@
 import ReactDOM from 'react-dom/client';
-import { StyleProvider, legacyLogicalPropertiesTransformer } from '@ant-design/cssinjs';
 import AppRouter from './router';
 import { BrowserRouter, useNavigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -88,11 +87,9 @@ const browserLanguage = navigator.language.split('-')[0];
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <ConfigProvider locale={browserLanguage === 'zh' ? zhCN : enUS}>
         <Provider store={store}>
-            <StyleProvider hashPriority='high' transformers={[legacyLogicalPropertiesTransformer]}>
-                <BrowserRouter>
-                    <AppRoot />
-                </BrowserRouter>
-            </StyleProvider>
+            <BrowserRouter>
+                <AppRoot />
+            </BrowserRouter>
         </Provider>
     </ConfigProvider>
 );

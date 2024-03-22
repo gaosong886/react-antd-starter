@@ -9,7 +9,6 @@ export interface MenuTree {
 
 /**
  * 构造 SysMenu 的树形结构，作为前端组件的 props
- *
  * @param nodes 节点列表
  * @param selectedSet 选中的节点集合
  * @returns MenuTree

@@ -1,12 +1,12 @@
-import { PageContainer, ProLayout } from '@ant-design/pro-components';
-import { useEffect, useMemo } from 'react';
+import { MenuDataItem, PageContainer, ProLayout } from '@ant-design/pro-components';
+import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAxios } from '../../hooks/axios';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from '../../store';
 import { useBaseStore } from '../../hooks/base-store';
 import { clearUserInfo, setUserInfo } from '../../store/slices/user';
-import { Dropdown, Flex } from 'antd';
+import { Dropdown } from 'antd';
 import Icon, { GithubOutlined, LogoutOutlined } from '@ant-design/icons';
 import { AuthToken } from '../../utils/auth-token';
 import { clearMenuInfo, setMenuInfo } from '../../store/slices/menu';
@@ -16,9 +16,15 @@ import { buildMenuTree } from '../../utils/menu-tree';
 import { Res, ResCode, SysMenu, SysUser } from '../../api/types';
 import { API } from '../../api/constants';
 
+const loopMenuItem = (menus: any[]): MenuDataItem[] =>
+    menus.map(({ icon, children, ...item }) => ({
+        ...item,
+        icon: icon && <Icon component={(icons as any)[icon as string]} style={{ marginRight: '8px' }} />,
+        children: children && loopMenuItem(children),
+    }));
+
 /**
  * 通用页面父组件
- * 
  */
 const BaseLayout: React.FC = () => {
     const navigate = useNavigate();
@@ -31,18 +37,13 @@ const BaseLayout: React.FC = () => {
     const userState = useAxios<Res<SysUser>>({ url: API.USER_PROFILE, method: 'get' });
     const menuState = useAxios<Res<SysMenu[]>>({ url: API.MENU_MENU, method: 'get' });
 
-    const menuTree = useMemo(() => {
+    useEffect(() => {
         if (menuState.resp?.data) {
             // 把从服务端获取的菜单列表转换成树结构
-            return buildMenuTree(menuState.resp?.data);
+            const menuTree = buildMenuTree(menuState.resp.data);
+            dispatch(setMenuInfo(menuTree.tree));
         }
-    }, [menuState.resp?.data]);
-
-    // 未登录状态，跳转到登录页
-    useEffect(() => {
-        if (!AuthToken.get()) navigate('/login');
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [dispatch, menuState.resp?.data]);
 
     useEffect(() => {
         // 保存从服务器得到的用户信息
@@ -50,19 +51,16 @@ const BaseLayout: React.FC = () => {
     }, [dispatch, userState.resp]);
 
     useEffect(() => {
-        // 保存菜单树
-        if (menuTree && menuTree.tree.length > 0) dispatch(setMenuInfo(menuTree.tree));
-    }, [dispatch, menuTree]);
-
-    useEffect(() => {
         // store 中没有用户信息，尝试获取
         if (userInfo.id === 0) userState.fetch();
+        // store 没有菜单数据，尝试获取菜单
+        if (menuInfo.length === 0) menuState.fetch();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // 未登录状态，跳转到登录页
     useEffect(() => {
-        // store 没有菜单数据，尝试获取菜单
-        if (menuInfo.length === 0) menuState.fetch();
+        if (!AuthToken.get()) navigate('/login');
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -77,6 +75,9 @@ const BaseLayout: React.FC = () => {
                     path: '/',
                     children: menuInfo,
                 }}
+                postMenuData={(menuData?: MenuDataItem[]) => {
+                    return loopMenuItem(menuData || []);
+                }}
                 menu={{ autoClose: false }}
                 layout='mix'
                 title={t('common.appName')}
@@ -85,7 +86,7 @@ const BaseLayout: React.FC = () => {
                     pathname: location.pathname,
                 }}
                 avatarProps={{
-                    src: userState.resp?.data?.photo ? userState.resp?.data?.photo : '/profile.jpeg',
+                    src: userInfo?.photo ? userInfo?.photo : '/profile.jpeg',
                     size: 'small',
                     render: (_props, dom) => {
                         return (
@@ -113,22 +114,13 @@ const BaseLayout: React.FC = () => {
                         );
                     },
                 }}
-                subMenuItemRender={(item) => (
-                    <Flex>
-                        {item.icon && <Icon component={(icons as any)[item.icon as string]} style={{ marginRight: '8px' }} />}
-                        {item.name}
-                    </Flex>
-                )}
-                menuItemRender={(item) => (
+                menuItemRender={(item, dom) => (
                     <div
                         onClick={() => {
                             if (item.path) navigate(item.path);
                         }}
                     >
-                        <Flex>
-                            {item.icon && <Icon component={(icons as any)[item.icon as string]} style={{ marginRight: '8px' }} />}
-                            {item.name}
-                        </Flex>
+                        {dom}
                     </div>
                 )}
                 menuFooterRender={(props) => {

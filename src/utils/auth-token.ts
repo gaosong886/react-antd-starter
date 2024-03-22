@@ -10,7 +10,6 @@ interface Token extends JwtToken {
 
 /**
  * 工具类，用来存取 Token，以及判断 Token 是否过期
- * 
  */
 export class AuthToken {
     static get(): Token | null {

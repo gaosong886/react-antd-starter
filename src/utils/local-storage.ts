@@ -1,6 +1,5 @@
 /**
- * 工具类，用来操作 localStorage
- * 
+ * localStorage 工具类
  */
 export class LocalStorage {
     static clear(): void {

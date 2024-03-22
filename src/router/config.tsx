@@ -24,7 +24,6 @@ const isExclude = (path: string): boolean => {
 
 /**
  * 根据传入的文件路径，生成页面的路由路径
- *
  * @param path 文件路径
  * @returns 路由路径
  * @example
@@ -40,7 +39,6 @@ const getRoutePath = (path: string): string => {
 
 /**
  * 构建路由
- *
  * @param pages 页面文件列表
  * @returns 路由对象列表
  *
