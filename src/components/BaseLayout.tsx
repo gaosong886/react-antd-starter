@@ -34,8 +34,8 @@ const BaseLayout: React.FC = () => {
     const sysUserData = useSelector((state: RootState) => state.sysUser.data);
     const sysMenuData = useSelector((state: RootState) => state.sysMenu.data);
 
-    const userState = useAxios<Res<SysUser>>({ url: api.USER_PROFILE, method: 'get' });
-    const menuState = useAxios<Res<SysMenu[]>>({ url: api.MENU_MENU, method: 'get' });
+    const userState = useAxios<Res<SysUser>>({ ...api.user.profile });
+    const menuState = useAxios<Res<SysMenu[]>>({ ...api.menu.menu });
 
     useEffect(() => {
         if (menuState.resp?.data) {
