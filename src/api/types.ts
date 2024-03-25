@@ -1,34 +1,39 @@
-// 接口返回状态码
+/** 
+ * 接口返回状态码
+*/
 export enum ResCode {
     SUCCESS = 0,
 }
 
-// 菜单类型
+/** 
+ * 菜单类型
+*/
 export enum SysMenuType {
-    // 目录
     DIRECTORY = 0,
-
-    // 页面
     PAGE = 1,
-
-    // 操作
     OPERATION = 2,
 }
 
-// 账号状态
+/** 
+ * 账号状态
+*/
 export enum AccountStatus {
     ACTIVE = 0,
     BANNED = -1,
 }
 
-// 统一封装的接口返回对象，data 泛型
+/** 
+ * 统一封装的接口返回对象
+*/
 export interface Res<T> {
     code: number;
     message?: string;
     data?: T;
 }
 
-// 分页对象
+/** 
+ * 分页对象
+*/
 export interface Pager<T> {
     totalItems?: number;
     totalPages?: number;
@@ -37,12 +42,16 @@ export interface Pager<T> {
     data: T[];
 }
 
-// 参数校验错误信息
+/** 
+ * 参数校验错误信息
+*/
 export interface ValidError {
     errors?: string[];
 }
 
-// JWT
+/** 
+ * JWT Token
+*/
 export interface JwtToken {
     tokenType: string;
     accessToken: string;
@@ -51,7 +60,9 @@ export interface JwtToken {
     refreshTokenExpiresInSec: number;
 }
 
-// 角色
+/** 
+ * 角色
+*/
 export interface SysRole {
     id: number;
     name: string;
@@ -60,13 +71,17 @@ export interface SysRole {
     menus: SysMenu[];
 }
 
-// 权限
+/** 
+ * 权限
+*/
 export interface SysPermission {
     id: number;
     name: string;
 }
 
-// 用户信息
+/** 
+ * 用户信息
+*/
 export interface SysUser {
     id: number;
     photo: string;
@@ -76,7 +91,9 @@ export interface SysUser {
     roles: SysRole[];
 }
 
-// 菜单
+/** 
+ * 菜单
+*/
 export interface SysMenu {
     id: number;
     name: string;
@@ -90,7 +107,9 @@ export interface SysMenu {
     children?: SysMenu[];
 }
 
-// 系统日志
+/** 
+ * 系统日志
+*/
 export interface SysLog {
     userId: number;
     ip: string;
@@ -100,7 +119,9 @@ export interface SysLog {
     user: SysUser;
 }
 
-// 定时任务
+/** 
+ * 定时任务
+*/
 export interface ScheduledTask {
     name: string;
     cronTime: string;

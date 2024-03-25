@@ -6,11 +6,13 @@ import { useCallback, useMemo, useState } from 'react';
 import { MenuFormModal } from './components/MenuFormModal';
 import { useTranslation } from 'react-i18next';
 import { buildMenuTree } from '~/utils/menuTree';
-import { API } from '~/api/constants';
+import { api } from '~/api';
 import { ResCode, Res, SysMenuType, SysMenu } from '~/api/types';
 import * as icons from '@ant-design/icons';
 
-// 展开的 key 列表
+/**
+ * 展开状态的菜单 key 列表
+ */
 interface ExpandedRows {
     keys: number[];
 }
@@ -22,7 +24,7 @@ const MenuManagementPage: React.FC = () => {
     const { t } = useTranslation();
 
     // 表格数据请求状态对象
-    const tableReqState = useAxios<Res<SysMenu[]>>({ url: API.MENU_LIST, method: 'get', manual: false });
+    const tableReqState = useAxios<Res<SysMenu[]>>({ ...api.menu.list, manual: false });
 
     // '隐藏'、'删除' 请求状态对象
     const updateReqState = useAxios<Res<undefined>>({});
@@ -56,8 +58,8 @@ const MenuManagementPage: React.FC = () => {
     // 点击 '删除'
     const handleDelete = async (id: number) => {
         const res = await updateReqState.fetch({
-            url: `${API.MENU_DELETE}/${id}`,
-            method: 'post',
+            url: `${api.menu.delete.url}/${id}`,
+            method: api.menu.delete.method,
         });
         if (res?.code === ResCode.SUCCESS) tableReqState.fetch();
     };
@@ -110,8 +112,8 @@ const MenuManagementPage: React.FC = () => {
                         onChange={(_checked, event) => {
                             event.stopPropagation();
                             updateReqState.fetch({
-                                url: `${API.MENU_HIDE}/${record.id}`,
-                                method: 'post',
+                                url: `${api.menu.hide.url}/${record.id}`,
+                                method: api.menu.hide.method,
                             });
                         }}
                     />

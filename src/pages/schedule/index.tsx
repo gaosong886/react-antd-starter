@@ -5,22 +5,20 @@ import { PauseCircleTwoTone, PlayCircleTwoTone, SyncOutlined } from '@ant-design
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ResCode, Res, ScheduledTask } from '~/api/types';
-import { API } from '~/api/constants';
+import { api } from '~/api';
 
 const SchedulePage: React.FC = () => {
     const { t } = useTranslation();
 
     // 表格数据请求状态对象
     const tableReqState = useAxios<Res<ScheduledTask[]>>({
-        url: API.SCHEDULE_LIST,
-        method: 'get',
+        ...api.scheduledTask.list,
         manual: false,
     });
 
     // '开始/暂停' 请求状态对象
     const switchReqState = useAxios<Res<undefined>>({
-        url: API.SCHEDULE_SWITCH,
-        method: 'post',
+        ...api.scheduledTask.switch,
         manual: true,
     });
 

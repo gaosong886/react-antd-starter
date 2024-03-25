@@ -6,7 +6,7 @@ import { DataNode } from 'antd/es/tree';
 import { useTranslation } from 'react-i18next';
 import { buildMenuTree } from '~/utils/menuTree';
 import { ResCode, Res, SysMenu, SysRole, ValidError } from '~/api/types';
-import { API } from '~/api/constants';
+import { api } from '~/api';
 
 export interface RoleFormModalProps {
     visible: boolean;
@@ -22,7 +22,7 @@ export const RoleFormModal: React.FC<RoleFormModalProps> = (props: RoleFormModal
     const { t } = useTranslation();
 
     // 菜单请求状态对象
-    const menuReqState = useAxios<Res<SysMenu[]>>({ url: API.MENU_LIST, method: 'get', manual: false });
+    const menuReqState = useAxios<Res<SysMenu[]>>({ ...api.menu.list, manual: false });
 
     // '保存' 请求状态对象
     const saveReqState = useAxios<Res<SysRole>>({});
@@ -51,7 +51,7 @@ export const RoleFormModal: React.FC<RoleFormModalProps> = (props: RoleFormModal
     // 保存事件
     const onFinish = useCallback(
         async (value: object) => {
-            const url = props.record ? `${API.ROLE_UPDATE}/${props.record.id}` : API.ROLE_CREATE;
+            const url = props.record ? `${api.role.update.url}/${props.record.id}` : api.role.create.url;
             const res = await saveReqState.fetch({ url: url, method: 'post', data: { ...value, menuIds: checkedKeys } });
             if (res?.code === ResCode.SUCCESS) {
                 props.onFinish();

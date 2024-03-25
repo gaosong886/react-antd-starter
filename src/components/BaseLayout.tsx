@@ -11,7 +11,7 @@ import * as icons from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { buildMenuTree } from '~/utils/menuTree';
 import { Res, ResCode, SysMenu, SysUser } from '~/api/types';
-import { API } from '~/api/constants';
+import { api } from '~/api';
 import { clearSysMenuData, setSysMenuData } from '~/store/slices/sysMenu';
 import { clearSysUserData, setSysUserData } from '~/store/slices/sysUser';
 
@@ -34,8 +34,8 @@ const BaseLayout: React.FC = () => {
     const sysUserData = useSelector((state: RootState) => state.sysUser.data);
     const sysMenuData = useSelector((state: RootState) => state.sysMenu.data);
 
-    const userState = useAxios<Res<SysUser>>({ url: API.USER_PROFILE, method: 'get' });
-    const menuState = useAxios<Res<SysMenu[]>>({ url: API.MENU_MENU, method: 'get' });
+    const userState = useAxios<Res<SysUser>>({ url: api.USER_PROFILE, method: 'get' });
+    const menuState = useAxios<Res<SysMenu[]>>({ url: api.MENU_MENU, method: 'get' });
 
     useEffect(() => {
         if (menuState.resp?.data) {

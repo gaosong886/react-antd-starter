@@ -6,7 +6,7 @@ import { store } from '~/store';
 import { App, ConfigProvider, message, notification } from 'antd';
 import { useCallback, useEffect } from 'react';
 import { HttpStatusCode } from 'axios';
-import { API } from '~/api/constants';
+import { api } from '~/api';
 import enUS from 'antd/locale/en_US';
 import zhCN from 'antd/locale/zh_CN';
 import '~/i18n';
@@ -50,7 +50,7 @@ export const AppRoot: React.FC = () => {
             const statusCode = event.detail.status;
 
             // 返回 401 且当前路径不是登录页时，跳转到登录页
-            if (statusCode === HttpStatusCode.Unauthorized && event.detail.url !== API.AUTH_LOGIN) {
+            if (statusCode === HttpStatusCode.Unauthorized && event.detail.url !== api.AUTH_LOGIN) {
                 navigate('/login');
             } else {
                 // 弹出消息框提示错误信息

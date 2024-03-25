@@ -1,9 +1,9 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { AuthToken } from '~/utils/authToken';
 import { JwtToken, ResCode, Res } from '~/api/types';
-import { API } from '~/api/constants';
+import { api } from '~/api';
 
-const AUTH_EXLUDE_URLS = [API.AUTH_LOGIN, API.AUTH_REFRESH];
+const AUTH_EXLUDE_URLS = [api.auth.login.url, api.auth.refresh.url];
 
 // 是否正在刷新 JWT
 let isRefreshing = false;
@@ -20,7 +20,6 @@ const axiosInstance = axios.create({ baseURL: import.meta.env.VITE_BASE_API_URL,
  * 刷新 Token 期间所有需要鉴权的请求将进入等待队列
  */
 axiosInstance.interceptors.request.use((config) => {
-
     // 不需要验证的 URL 直接放行
     if (config.url && AUTH_EXLUDE_URLS.includes(config.url)) return config;
 
@@ -47,7 +46,7 @@ axiosInstance.interceptors.request.use((config) => {
 
         // 发起刷新 token 的请求
         axiosInstance
-            .post(API.AUTH_REFRESH, { refreshToken: token.refreshToken })
+            .request({ ...api.auth.refresh, data: { refreshToken: token.refreshToken } })
             .then((res) => {
                 AuthToken.save(res.data.data);
                 isRefreshing = false;
@@ -76,14 +75,16 @@ axiosInstance.interceptors.request.use((config) => {
 
 /**
  * 注册 response 拦截器，在请求成功/失败时发送相应事件给页面组件
- * 
+ *
  */
 axiosInstance.interceptors.response.use(
     (response: AxiosResponse) => {
         const { code, data, message } = response.data;
 
         // 如果当前是登录请求，登录成功后保存 token
-        if (code === ResCode.SUCCESS && response.config.url === API.AUTH_LOGIN) AuthToken.save(data);
+        if (code === ResCode.SUCCESS && response.config.url === api.auth.login.url) {
+            AuthToken.save(data);
+        }
 
         window.dispatchEvent(
             new CustomEvent('requestSuccess', {

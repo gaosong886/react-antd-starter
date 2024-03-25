@@ -7,7 +7,7 @@ import appRoutes from '~/router/config';
 import AntdIconSelector from '~/components/AntdIconSelector';
 import { useTranslation } from 'react-i18next';
 import { ResCode, Res, SysMenuType, SysMenu, SysPermission, ValidError } from '~/api/types';
-import { API } from '~/api/constants';
+import { api } from '~/api';
 
 export interface MenuFormModalProps {
     visible: boolean;
@@ -28,7 +28,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
     const [icon, setIcon] = useState(props.record?.icon);
 
     // 权限列表请求状态对象
-    const permissionReqState = useAxios<Res<SysPermission[]>>({ url: API.PERMISSION_LIST, method: 'get' });
+    const permissionReqState = useAxios<Res<SysPermission[]>>({ ...api.permission.list });
 
     // '保存' 请求状态对象
     const saveReqState = useAxios<Res<SysMenu>>({});
@@ -51,7 +51,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
     // 保存
     const onFinish = useCallback(
         async (value: any) => {
-            const url = props.record ? `${API.MENU_UPDATE}/${props.record.id}` : API.MENU_CREATE;
+            const url = props.record ? `${api.menu.update.url}/${props.record.id}` : api.menu.create.url;
             const hidden = value.hidden ? 1 : 0;
             const res = await saveReqState.fetch({ url: url, method: 'post', data: { ...value, type, icon, hidden } });
             // 保存成功时关闭 Modal

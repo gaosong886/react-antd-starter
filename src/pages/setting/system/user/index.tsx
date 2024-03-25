@@ -6,7 +6,7 @@ import { PlusOutlined, SyncOutlined } from '@ant-design/icons';
 import { UserFormModal } from './components/UserFormModal';
 import { useTranslation } from 'react-i18next';
 import { AccountStatus, Pager, ResCode, Res, SysUser } from '~/api/types';
-import { API } from '~/api/constants';
+import { api } from '~/api';
 
 /**
  * 用户管理
@@ -29,9 +29,8 @@ const UserManagementPage: React.FC = () => {
 
     // 表格数据请求状态对象
     const tableReqState = useAxios<Res<Pager<SysUser>>>({
-        url: API.USER_PAGE,
+        ...api.user.page,
         data: { ...pagination, query },
-        method: 'post',
         manual: true,
     });
 
@@ -41,8 +40,8 @@ const UserManagementPage: React.FC = () => {
     // 点击 '删除'
     const handleDelete = async (id: number) => {
         const res = await deleteState.fetch({
-            url: `${API.USER_DELETE}/${id}`,
-            method: 'post',
+            url: `${api.user.delete.url}/${id}`,
+            method: api.user.delete.method,
         });
         // 刷新表格
         if (res?.code === ResCode.SUCCESS) tableReqState.fetch();

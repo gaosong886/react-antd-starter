@@ -5,7 +5,7 @@ import { PlusOutlined, SyncOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { RoleFormModal } from './components/RoleFormModal';
 import { useTranslation } from 'react-i18next';
-import { API } from '~/api/constants';
+import { api } from '~/api';
 import { ResCode, Res, SysRole } from '~/api/types';
 
 /**
@@ -15,7 +15,7 @@ const RoleManagementPage: React.FC = () => {
     const { t } = useTranslation();
 
     // 表格数据请求状态对象
-    const tableReqState = useAxios<Res<SysRole[]>>({ url: API.ROLE_LIST, method: 'get', manual: false });
+    const tableReqState = useAxios<Res<SysRole[]>>({ ...api.role.list, manual: false });
 
     // '删除' 请求状态对象
     const deleteReqState = useAxios<Res<undefined>>({});
@@ -27,8 +27,8 @@ const RoleManagementPage: React.FC = () => {
     // 点击 '删除'
     const handleDelete = async (id: number) => {
         const res = await deleteReqState.fetch({
-            url: `${API.ROLE_DELETE}/${id}`,
-            method: 'post',
+            url: `${api.role.delete.url}/${id}`,
+            method: api.role.delete.method,
         });
         if (res?.code === ResCode.SUCCESS) tableReqState.fetch();
     };

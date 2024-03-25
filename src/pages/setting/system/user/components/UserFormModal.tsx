@@ -6,7 +6,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { RcFile } from 'antd/es/upload';
 import { useTranslation } from 'react-i18next';
 import { ResCode, Res, SysRole, SysUser, ValidError } from '~/api/types';
-import { API } from '~/api/constants';
+import { api } from '~/api';
 
 export interface UserFormModalProps {
     visible: boolean;
@@ -22,10 +22,10 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
     const { t } = useTranslation();
 
     // 获取角色列表请求状态对象
-    const roleReqState = useAxios<Res<SysRole[]>>({ url: API.ROLE_LIST, method: 'get', manual: false });
+    const roleReqState = useAxios<Res<SysRole[]>>({ ...api.role.list, manual: false });
 
     // 上传照片请求状态对象
-    const photoReqState = useAxios<Res<UploadFile>>({ url: API.USER_PHOTO, method: 'post' });
+    const photoReqState = useAxios<Res<UploadFile>>({ ...api.user.photo });
 
     // '保存' 请求状态对象
     const saveReqRecordState = useAxios<Res<SysUser>>({});
@@ -64,7 +64,7 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
     // 保存
     const onFinish = useCallback(
         async (value: any) => {
-            const url = props.record ? `${API.USER_UPDATE}/${props.record.id}` : API.USER_CREATE;
+            const url = props.record ? `${api.user.update.url}/${props.record.id}` : api.user.create.url;
             const res = await saveReqRecordState.fetch({
                 url: url,
                 method: 'post',
@@ -128,7 +128,7 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
                             id='upload'
                             name='upload'
                             accept='image/png, image/jpeg'
-                            action={API.USER_PHOTO}
+                            action={api.user.photo.url}
                             listType='picture-circle'
                             maxCount={1}
                             customRequest={uploadRequest}

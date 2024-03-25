@@ -5,7 +5,7 @@ import { SyncOutlined } from '@ant-design/icons';
 import { useAxios } from '~/hooks/useAxios';
 import { useTranslation } from 'react-i18next';
 import { Pager, ResCode, Res, SysLog } from '~/api/types';
-import { API } from '~/api/constants';
+import { api } from '~/api';
 
 /**
  * 系统日志
@@ -24,14 +24,13 @@ const UserManagementPage: React.FC = () => {
 
     // 表格数据请求状态对象
     const tableReqState = useAxios<Res<Pager<SysLog>>>({
-        url: API.LOG_PAGE,
+        ...api.log.page,
         data: { ...pagination, query },
-        method: 'post',
         manual: true,
     });
 
     // '清空' 请求状态对象
-    const truncateState = useAxios<Res<undefined>>({ url: API.LOG_TRUNCATE, method: 'post', manual: true });
+    const truncateState = useAxios<Res<undefined>>({ ...api.log.truncate, manual: true });
 
     // 分页变化事件
     const onPaginationChange = useCallback((page: number, pageSize: number) => {

@@ -5,7 +5,7 @@ import { useAxios } from '~/hooks/useAxios';
 import { useNavigate } from 'react-router-dom';
 import { Alert, Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { API } from '~/api/constants';
+import { api } from '~/api';
 import { JwtToken, ResCode, Res, ValidError } from '~/api/types';
 
 const LoginPage: React.FC = () => {
@@ -13,7 +13,7 @@ const LoginPage: React.FC = () => {
     const { t } = useTranslation();
 
     // 登录请求状态对象
-    const loginReqState = useAxios<Res<JwtToken | ValidError>>({ url: API.AUTH_LOGIN, method: 'post' });
+    const loginReqState = useAxios<Res<JwtToken | ValidError>>({ ...api.auth.login });
 
     // 服务端回传的表单校验错误信息
     const validErrors = useMemo(() => (loginReqState.resp?.data as ValidError)?.errors || [], [loginReqState.resp?.data]);
