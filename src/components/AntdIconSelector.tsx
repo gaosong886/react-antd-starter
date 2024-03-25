@@ -16,7 +16,7 @@ export interface IconSelectorProps {
 /**
  * Antd 图标选择器组件
  */
-const IconSelector = (props: IconSelectorProps) => {
+const AntdIconSelector = (props: IconSelectorProps) => {
     const { iconType, defaultValue, dropdownStyle, placement, iconStyle, setValue } = props;
 
     // 读取 Antd 的图标库
@@ -68,4 +68,4 @@ const IconSelector = (props: IconSelectorProps) => {
     );
 };
 
-export default IconSelector;
+export default AntdIconSelector;

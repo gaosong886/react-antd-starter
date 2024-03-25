@@ -1,6 +1,8 @@
 import { SysMenu } from '../api/types';
 
-// 包含选中/半选中状态的 SysMenu 树形结构
+/**
+ * 包含选中/半选中状态的 SysMenu 树形结构
+ */
 export interface MenuTree {
     tree: SysMenu[];
     checked: number[];
@@ -12,7 +14,6 @@ export interface MenuTree {
  * @param nodes 节点列表
  * @param selectedSet 选中的节点集合
  * @returns MenuTree
- *
  */
 export const buildMenuTree = (nodes: SysMenu[], selectedSet?: Set<number>): MenuTree => {
     if (!nodes) return { tree: [], checked: [], halfChecked: [] };

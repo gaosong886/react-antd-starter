@@ -1,6 +1,6 @@
 import { Button, Flex, Spin, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
-import { useAxios } from '../../hooks/axios';
+import { useAxios } from '../../hooks/useAxios';
 import { PauseCircleTwoTone, PlayCircleTwoTone, SyncOutlined } from '@ant-design/icons';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';

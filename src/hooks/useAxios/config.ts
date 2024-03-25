@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { AuthToken } from '../../utils/auth-token';
+import { AuthToken } from '../../utils/authToken';
 import { JwtToken, ResCode, Res } from '../../api/types';
 import { API } from '../../api/constants';
 
@@ -18,7 +18,6 @@ const axiosInstance = axios.create({ baseURL: import.meta.env.VITE_BASE_API_URL,
  * 注册 request 拦截器，将自动为接口请求加入 Authorization 头
  * 当 accessToken 过期时，拦截器将尝试用 refreshToken 刷新
  * 刷新 Token 期间所有需要鉴权的请求将进入等待队列
- * 
  */
 axiosInstance.interceptors.request.use((config) => {
 

@@ -1,9 +1,11 @@
 import { JwtToken } from '../api/types';
-import { LocalStorage } from './local-storage';
+import { LocalStorage } from './localStorage';
 
 const TOKEN_STORAGE_KEY = 'tokenWrapper';
 
-// 为 JwtToken 扩展创建时间属性，用于本地判断 token 是否过期
+/**
+ * 为 JwtToken 扩展创建时间属性，用于本地判断 token 是否过期
+ */
 interface Token extends JwtToken {
     createAt: number;
 }

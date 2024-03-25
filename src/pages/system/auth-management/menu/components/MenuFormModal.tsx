@@ -1,10 +1,10 @@
 import { ModalForm, ProForm, ProFormRadio, ProFormSelect, ProFormSwitch, ProFormText, ProFormTreeSelect } from '@ant-design/pro-components';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAxios } from '../../../../../hooks/axios';
+import { useAxios } from '../../../../../hooks/useAxios';
 import { Alert, Spin } from 'antd';
 import React from 'react';
 import appRoutes from '../../../../../router/config';
-import IconSelector from '../../../../../components/icon-selector';
+import AntdIconSelector from '../../../../../components/AntdIconSelector';
 import { useTranslation } from 'react-i18next';
 import { ResCode, Res, SysMenuType, SysMenu, SysPermission, ValidError } from '../../../../../api/types';
 import { API } from '../../../../../api/constants';
@@ -182,7 +182,7 @@ export const MenuFormModal: React.FC<MenuFormModalProps> = (props: MenuFormModal
                     />
                     {type != SysMenuType.OPERATION && (
                         <ProForm.Item label={t('form.menu.icon')}>
-                            <IconSelector iconType={'Outlined'} defaultValue={icon} setValue={setIcon} />
+                            <AntdIconSelector iconType={'Outlined'} defaultValue={icon} setValue={setIcon} />
                         </ProForm.Item>
                     )}
                 </ProForm.Group>

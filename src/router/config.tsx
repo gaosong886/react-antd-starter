@@ -1,5 +1,5 @@
 import { RouteObject, Navigate } from 'react-router-dom';
-import BaseLayout from '../components/base-layout';
+import BaseLayout from '../components/BaseLayout';
 import NotFoundPage from '../pages/errors/404';
 import LoginPage from '../pages/login';
 import loadable, { DefaultComponent } from '@loadable/component';

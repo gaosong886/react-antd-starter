@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './slices/user';
-import menuReducer from './slices/menu';
+import sysUserReducer from './slices/sysUser';
+import sysMenuReducer from './slices/sysMenu';
 
 export const store = configureStore({
     reducer: {
-        user: userReducer,
-        menu: menuReducer
+        sysUser: sysUserReducer,
+        sysMenu: sysMenuReducer
     },
 });
 

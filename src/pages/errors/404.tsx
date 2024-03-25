@@ -4,9 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 const NotFoundPage: React.FC = () => {
     const navigate = useNavigate();
-    const goIndex = () => {
-        navigate('/');
-    };
     const { t } = useTranslation();
 
     return (
@@ -16,7 +13,7 @@ const NotFoundPage: React.FC = () => {
                 title='404'
                 subTitle={t('hint.404')}
                 extra={
-                    <Button type='primary' onClick={goIndex}>
+                    <Button type='primary' onClick={() => navigate('/')}>
                         {t('function.returnToHome')}
                     </Button>
                 }

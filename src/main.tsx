@@ -9,7 +9,7 @@ import { HttpStatusCode } from 'axios';
 import { API } from './api/constants';
 import enUS from 'antd/locale/en_US';
 import zhCN from 'antd/locale/zh_CN';
-import './locales/config';
+import './i18n';
 import { useTranslation } from 'react-i18next';
 
 export const AppRoot: React.FC = () => {
