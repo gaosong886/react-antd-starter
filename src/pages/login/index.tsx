@@ -1,12 +1,12 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { useAxios } from '../../hooks/useAxios';
+import { useAxios } from '~/hooks/useAxios';
 import { useNavigate } from 'react-router-dom';
 import { Alert, Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { API } from '../../api/constants';
-import { JwtToken, ResCode, Res, ValidError } from '../../api/types';
+import { API } from '~/api/constants';
+import { JwtToken, ResCode, Res, ValidError } from '~/api/types';
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate();

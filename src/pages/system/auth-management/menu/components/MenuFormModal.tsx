@@ -1,13 +1,13 @@
 import { ModalForm, ProForm, ProFormRadio, ProFormSelect, ProFormSwitch, ProFormText, ProFormTreeSelect } from '@ant-design/pro-components';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAxios } from '../../../../../hooks/useAxios';
+import { useAxios } from '~/hooks/useAxios';
 import { Alert, Spin } from 'antd';
 import React from 'react';
-import appRoutes from '../../../../../router/config';
-import AntdIconSelector from '../../../../../components/AntdIconSelector';
+import appRoutes from '~/router/config';
+import AntdIconSelector from '~/components/AntdIconSelector';
 import { useTranslation } from 'react-i18next';
-import { ResCode, Res, SysMenuType, SysMenu, SysPermission, ValidError } from '../../../../../api/types';
-import { API } from '../../../../../api/constants';
+import { ResCode, Res, SysMenuType, SysMenu, SysPermission, ValidError } from '~/api/types';
+import { API } from '~/api/constants';
 
 export interface MenuFormModalProps {
     visible: boolean;

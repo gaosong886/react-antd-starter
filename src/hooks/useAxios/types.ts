@@ -1,6 +1,5 @@
-import { AxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosRequestConfig } from 'axios';
 
-// 钩子的 props，继承自 AxiosRequestConfig
 export interface UseAxiosProps extends AxiosRequestConfig {
     // 是否手动执行（设置为否的话组件加载后自动执行）
     manual?: boolean | (() => boolean);
@@ -8,7 +7,6 @@ export interface UseAxiosProps extends AxiosRequestConfig {
     cancelPrev?: boolean;
 }
 
-// 钩子返回的 state
 export interface UseAxiosState<T> {
     // 加载状态
     loading: boolean;
@@ -22,14 +20,13 @@ export interface UseAxiosState<T> {
     reset: () => void;
 }
 
-// 用来操作钩子内部 state 的 action
 export interface Action<T> {
     type: string;
     payload?: Payload<T>;
 }
 
 export interface Payload<T> {
-    err?: Error;
+    err?: AxiosError;
     resp?: T;
 }
 

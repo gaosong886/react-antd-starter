@@ -1,5 +1,4 @@
-import { JwtToken } from '../api/types';
-import { LocalStorage } from './localStorage';
+import { JwtToken } from '~/api/types';
 
 const TOKEN_STORAGE_KEY = 'tokenWrapper';
 
@@ -15,17 +14,18 @@ interface Token extends JwtToken {
  */
 export class AuthToken {
     static get(): Token | null {
-        return LocalStorage.get<Token>(TOKEN_STORAGE_KEY);
+        const value = localStorage.getItem(TOKEN_STORAGE_KEY);
+        return value ? (JSON.parse(value) as Token) : null;
     }
 
     static save(token: JwtToken) {
         // 服务端回传的过期时间单位是秒，这里也用秒做单位
         const createAt = Date.now() / 1000;
-        LocalStorage.set(TOKEN_STORAGE_KEY, { ...token, createAt });
+        localStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify({ ...token, createAt }));
     }
 
     static remove() {
-        LocalStorage.remove(TOKEN_STORAGE_KEY);
+        localStorage.removeItem(TOKEN_STORAGE_KEY);
     }
 
     static isExpired(token: Token): [boolean, boolean] {

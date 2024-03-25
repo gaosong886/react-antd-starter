@@ -1,4 +1,4 @@
-import { SysMenu } from '../api/types';
+import { SysMenu } from '~/api/types';
 
 /**
  * 包含选中/半选中状态的 SysMenu 树形结构

@@ -2,10 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button, Flex, Input, Popconfirm, Spin } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { SyncOutlined } from '@ant-design/icons';
-import { useAxios } from '../../../hooks/useAxios';
+import { useAxios } from '~/hooks/useAxios';
 import { useTranslation } from 'react-i18next';
-import { Pager, ResCode, Res, SysLog } from '../../../api/types';
-import { API } from '../../../api/constants';
+import { Pager, ResCode, Res, SysLog } from '~/api/types';
+import { API } from '~/api/constants';
 
 /**
  * 系统日志

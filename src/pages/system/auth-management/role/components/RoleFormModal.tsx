@@ -1,12 +1,12 @@
 import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-components';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAxios } from '../../../../../hooks/useAxios';
+import { useAxios } from '~/hooks/useAxios';
 import { Alert, Card, Spin, Tree, TreeProps } from 'antd';
 import { DataNode } from 'antd/es/tree';
 import { useTranslation } from 'react-i18next';
-import { buildMenuTree } from '../../../../../utils/menuTree';
-import { ResCode, Res, SysMenu, SysRole, ValidError } from '../../../../../api/types';
-import { API } from '../../../../../api/constants';
+import { buildMenuTree } from '~/utils/menuTree';
+import { ResCode, Res, SysMenu, SysRole, ValidError } from '~/api/types';
+import { API } from '~/api/constants';
 
 export interface RoleFormModalProps {
     visible: boolean;

@@ -44,22 +44,23 @@ export function useAxios<T>({ manual = true, cancelPrev = true, ...axiosRequestC
             abortController.current = new AbortController();
 
             try {
-                const res = await axiosInstance.request<AxiosRequestConfig>({
+                const res = await axiosInstance.request<T>({
                     ...axiosRequestConfig,
                     ...config,
                     signal: abortController.current.signal,
                 });
                 dispatch({
                     type: ActionType.REQUEST_SUCCESS,
-                    payload: { resp: res.data as T },
+                    payload: { resp: res.data },
                 });
-                return res.data as T;
+                return res.data;
             } catch (error) {
+                const axiosError = error as AxiosError<T>;
                 dispatch({
                     type: ActionType.REQUEST_ERROR,
-                    payload: { err: error as Error, resp: (error as AxiosError).response?.data as T },
+                    payload: { err: axiosError, resp: axiosError.response?.data },
                 });
-                return (error as AxiosError).response?.data as T;
+                return axiosError.response?.data;
             }
         },
         [axiosRequestConfig, cancelPrev]

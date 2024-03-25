@@ -1,12 +1,12 @@
 import { ModalForm, ProForm, ProFormSelect, ProFormSwitch, ProFormText } from '@ant-design/pro-components';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAxios } from '../../../../../hooks/useAxios';
+import { useAxios } from '~/hooks/useAxios';
 import { Alert, Spin, Upload, UploadFile } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { RcFile } from 'antd/es/upload';
 import { useTranslation } from 'react-i18next';
-import { ResCode, Res, SysRole, SysUser, ValidError } from '../../../../../api/types';
-import { API } from '../../../../../api/constants';
+import { ResCode, Res, SysRole, SysUser, ValidError } from '~/api/types';
+import { API } from '~/api/constants';
 
 export interface UserFormModalProps {
     visible: boolean;

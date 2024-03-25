@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { SysMenu } from '../../api/types';
+import { SysMenu } from '~/api/types';
 
 const initialValues: SysMenu[] = [];
 

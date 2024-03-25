@@ -1,13 +1,13 @@
 import { ColumnsType } from 'antd/es/table';
 import { Button, Flex, Popconfirm, Spin, Switch, Table, Tag } from 'antd/lib';
-import { useAxios } from '../../../../hooks/useAxios';
+import { useAxios } from '~/hooks/useAxios';
 import Icon, { NodeExpandOutlined, PlusOutlined, SyncOutlined } from '@ant-design/icons';
 import { useCallback, useMemo, useState } from 'react';
 import { MenuFormModal } from './components/MenuFormModal';
 import { useTranslation } from 'react-i18next';
-import { buildMenuTree } from '../../../../utils/menuTree';
-import { API } from '../../../../api/constants';
-import { ResCode, Res, SysMenuType, SysMenu } from '../../../../api/types';
+import { buildMenuTree } from '~/utils/menuTree';
+import { API } from '~/api/constants';
+import { ResCode, Res, SysMenuType, SysMenu } from '~/api/types';
 import * as icons from '@ant-design/icons';
 
 // 展开的 key 列表

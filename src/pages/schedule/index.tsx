@@ -1,11 +1,11 @@
 import { Button, Flex, Spin, Tag } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
-import { useAxios } from '../../hooks/useAxios';
+import { useAxios } from '~/hooks/useAxios';
 import { PauseCircleTwoTone, PlayCircleTwoTone, SyncOutlined } from '@ant-design/icons';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ResCode, Res, ScheduledTask } from '../../api/types';
-import { API } from '../../api/constants';
+import { ResCode, Res, ScheduledTask } from '~/api/types';
+import { API } from '~/api/constants';
 
 const SchedulePage: React.FC = () => {
     const { t } = useTranslation();

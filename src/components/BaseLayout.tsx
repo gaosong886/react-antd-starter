@@ -1,19 +1,19 @@
 import { MenuDataItem, PageContainer, ProLayout } from '@ant-design/pro-components';
 import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useAxios } from '../hooks/useAxios';
+import { useAxios } from '~/hooks/useAxios';
 import { useDispatch, useSelector } from 'react-redux';
-import { Dispatch, RootState } from '../store';
+import { Dispatch, RootState } from '~/store';
 import { Dropdown } from 'antd';
 import Icon, { GithubOutlined, LogoutOutlined } from '@ant-design/icons';
-import { AuthToken } from '../utils/authToken';
+import { AuthToken } from '~/utils/authToken';
 import * as icons from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { buildMenuTree } from '../utils/menuTree';
-import { Res, ResCode, SysMenu, SysUser } from '../api/types';
-import { API } from '../api/constants';
-import { clearSysMenuData, setSysMenuData } from '../store/slices/sysMenu';
-import { clearSysUserData, setSysUserData } from '../store/slices/sysUser';
+import { buildMenuTree } from '~/utils/menuTree';
+import { Res, ResCode, SysMenu, SysUser } from '~/api/types';
+import { API } from '~/api/constants';
+import { clearSysMenuData, setSysMenuData } from '~/store/slices/sysMenu';
+import { clearSysUserData, setSysUserData } from '~/store/slices/sysUser';
 
 const loopMenuItem = (menus: any[]): MenuDataItem[] =>
     menus.map(({ icon, children, ...item }) => ({

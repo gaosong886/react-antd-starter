@@ -1,15 +1,15 @@
 import ReactDOM from 'react-dom/client';
-import AppRouter from './router';
+import AppRouter from '~/router';
 import { BrowserRouter, useNavigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { store } from './store';
+import { store } from '~/store';
 import { App, ConfigProvider, message, notification } from 'antd';
 import { useCallback, useEffect } from 'react';
 import { HttpStatusCode } from 'axios';
-import { API } from './api/constants';
+import { API } from '~/api/constants';
 import enUS from 'antd/locale/en_US';
 import zhCN from 'antd/locale/zh_CN';
-import './i18n';
+import '~/i18n';
 import { useTranslation } from 'react-i18next';
 
 export const AppRoot: React.FC = () => {

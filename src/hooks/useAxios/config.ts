@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { AuthToken } from '../../utils/authToken';
-import { JwtToken, ResCode, Res } from '../../api/types';
-import { API } from '../../api/constants';
+import { AuthToken } from '~/utils/authToken';
+import { JwtToken, ResCode, Res } from '~/api/types';
+import { API } from '~/api/constants';
 
 const AUTH_EXLUDE_URLS = [API.AUTH_LOGIN, API.AUTH_REFRESH];
 

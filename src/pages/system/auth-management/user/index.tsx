@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useAxios } from '../../../../hooks/useAxios';
+import { useAxios } from '~/hooks/useAxios';
 import { Button, Flex, Popconfirm, Tag, Image, Spin, Input } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { PlusOutlined, SyncOutlined } from '@ant-design/icons';
 import { UserFormModal } from './components/UserFormModal';
 import { useTranslation } from 'react-i18next';
-import { AccountStatus, Pager, ResCode, Res, SysUser } from '../../../../api/types';
-import { API } from '../../../../api/constants';
+import { AccountStatus, Pager, ResCode, Res, SysUser } from '~/api/types';
+import { API } from '~/api/constants';
 
 /**
  * 用户管理

@@ -1,12 +1,12 @@
 import { ColumnsType } from 'antd/es/table';
 import { Button, Flex, Popconfirm, Spin, Table } from 'antd/lib';
-import { useAxios } from '../../../../hooks/useAxios';
+import { useAxios } from '~/hooks/useAxios';
 import { PlusOutlined, SyncOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { RoleFormModal } from './components/RoleFormModal';
 import { useTranslation } from 'react-i18next';
-import { API } from '../../../../api/constants';
-import { ResCode, Res, SysRole } from '../../../../api/types';
+import { API } from '~/api/constants';
+import { ResCode, Res, SysRole } from '~/api/types';
 
 /**
  * 角色管理

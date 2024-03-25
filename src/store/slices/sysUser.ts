@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { SysUser } from '../../api/types';
+import { SysUser } from '~/api/types';
 
 const initialValues: SysUser = {
     id: 0,

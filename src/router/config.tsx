@@ -1,7 +1,7 @@
 import { RouteObject, Navigate } from 'react-router-dom';
-import BaseLayout from '../components/BaseLayout';
-import NotFoundPage from '../pages/errors/404';
-import LoginPage from '../pages/login';
+import BaseLayout from '~/components/BaseLayout';
+import NotFoundPage from '~/pages/errors/404';
+import LoginPage from '~/pages/login';
 import loadable, { DefaultComponent } from '@loadable/component';
 import { Skeleton } from 'antd';
 
