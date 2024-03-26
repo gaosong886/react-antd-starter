@@ -64,10 +64,9 @@ export const UserFormModal: React.FC<UserFormModalProps> = (props: UserFormModal
     // 保存
     const onFinish = useCallback(
         async (value: any) => {
-            const url = props.record ? `${api.user.update.url}/${props.record.id}` : api.user.create.url;
+            const req = props.record ? api.user.update(props.record.id) : api.user.create;
             const res = await saveReqRecordState.fetch({
-                url: url,
-                method: 'post',
+                ...req,
                 data: { ...value, photo: photoUrl, accountStatus: value.accountStatus ? -1 : 0 },
             });
 

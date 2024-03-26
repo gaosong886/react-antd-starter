@@ -27,8 +27,7 @@ const RoleManagementPage: React.FC = () => {
     // 点击 '删除'
     const handleDelete = async (id: number) => {
         const res = await deleteReqState.fetch({
-            url: `${api.role.delete.url}/${id}`,
-            method: api.role.delete.method,
+            ...api.role.delete(id),
         });
         if (res?.code === ResCode.SUCCESS) tableReqState.fetch();
     };

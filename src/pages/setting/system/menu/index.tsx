@@ -58,8 +58,7 @@ const MenuManagementPage: React.FC = () => {
     // 点击 '删除'
     const handleDelete = async (id: number) => {
         const res = await updateReqState.fetch({
-            url: `${api.menu.delete.url}/${id}`,
-            method: api.menu.delete.method,
+            ...api.menu.delete(id),
         });
         if (res?.code === ResCode.SUCCESS) tableReqState.fetch();
     };
@@ -112,8 +111,7 @@ const MenuManagementPage: React.FC = () => {
                         onChange={(_checked, event) => {
                             event.stopPropagation();
                             updateReqState.fetch({
-                                url: `${api.menu.hide.url}/${record.id}`,
-                                method: api.menu.hide.method,
+                                ...api.menu.hide(record.id),
                             });
                         }}
                     />

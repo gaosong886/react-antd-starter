@@ -22,17 +22,23 @@ export const api = {
             url: '/sys-menu/create',
             method: 'post',
         },
-        update: {
-            url: '/sys-menu/update',
-            method: 'post',
+        update: (id: number) => {
+            return {
+                url: `/sys-menu/update/${id}`,
+                method: 'post',
+            };
         },
-        delete: {
-            url: '/sys-menu/delete',
-            method: 'post',
+        delete: (id: number) => {
+            return {
+                url: `/sys-menu/delete/${id}`,
+                method: 'post',
+            };
         },
-        hide: {
-            url: '/sys-menu/hide',
-            method: 'post',
+        hide: (id: number) => {
+            return {
+                url: `/sys-menu/hide/${id}`,
+                method: 'post',
+            };
         },
     },
     role: {
@@ -44,13 +50,17 @@ export const api = {
             url: '/sys-role/create',
             method: 'post',
         },
-        update: {
-            url: '/sys-role/update',
-            method: 'post',
+        update: (id: number) => {
+            return {
+                url: `/sys-role/update/${id}`,
+                method: 'post',
+            };
         },
-        delete: {
-            url: '/sys-role/delete',
-            method: 'post',
+        delete: (id: number) => {
+            return {
+                url: `/sys-role/delete/${id}`,
+                method: 'post',
+            };
         },
     },
     permission: {
@@ -68,13 +78,17 @@ export const api = {
             url: '/sys-user/create',
             method: 'post',
         },
-        update: {
-            url: '/sys-user/update',
-            method: 'post',
+        update: (id: number) => {
+            return {
+                url: `/sys-user/update/${id}`,
+                method: 'post',
+            };
         },
-        delete: {
-            url: '/sys-user/delete',
-            method: 'post',
+        delete: (id: number) => {
+            return {
+                url: `/sys-user/delete/${id}`,
+                method: 'post',
+            };
         },
         photo: {
             url: '/sys-user/photo',

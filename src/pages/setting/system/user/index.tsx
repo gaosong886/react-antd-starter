@@ -40,8 +40,7 @@ const UserManagementPage: React.FC = () => {
     // 点击 '删除'
     const handleDelete = async (id: number) => {
         const res = await deleteState.fetch({
-            url: `${api.user.delete.url}/${id}`,
-            method: api.user.delete.method,
+            ...api.user.delete(id),
         });
         // 刷新表格
         if (res?.code === ResCode.SUCCESS) tableReqState.fetch();
